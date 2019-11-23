@@ -5,12 +5,18 @@ import jzheng.Chamber;
 import jzheng.Passage;
 import jzheng.Space;
 import jzheng.Door;
+import jzheng.PassageSection;
 import java.util.ArrayList;
+import dnd.models.Monster;
+import dnd.models.Treasure;
+import dnd.die.D20;
+import dnd.die.Percentile;
 
 public class Controller {
   private GuiDemo myGui;
   private Level myLevel;
-  private static int NUM_HYDRAS = 5;
+  private Treasure tempTreasure;
+  private Monster tempMonster;
 
   public Controller(GuiDemo theGui){
     myGui = theGui;
@@ -50,6 +56,112 @@ public class Controller {
 
   public String getDoorDescriptionPassage(Passage myPassage, int index) {
     return myPassage.getDoor(index).getDescription();
+  }
+
+  public String addTempTreasure(int num) {
+    Percentile myDie = new Percentile();
+    tempTreasure = new Treasure();
+    tempTreasure.chooseTreasure(myDie.roll());
+    return tempTreasure.getDescription();
+  }
+
+  public ArrayList treasureList() {
+    ArrayList<String> treasureList = new ArrayList<>();
+    int i;
+    int start = 1,end;
+    Treasure temp = new Treasure();
+    Treasure after = new Treasure();
+
+    for (i = 1; i <= 98; i++) {
+      temp.chooseTreasure(i);
+      if (i != 98) {
+        after.chooseTreasure(i + 1);
+        if (!(temp.getDescription().equals(after.getDescription()))) {
+          end = i;
+          treasureList.add(start + "-" + end + ": " + temp.getDescription());
+          start = i + 1;
+        }
+      } else {
+        treasureList.add("98-00: " + temp.getDescription());
+      }
+    }
+
+    return treasureList;
+  }
+
+  public ArrayList monsterList() {
+    ArrayList<String> monsterList = new ArrayList<>();
+    int i;
+    int start = 1,end;
+    Monster temp = new Monster();
+    Monster after = new Monster();
+
+    for (i = 1; i <= 20; i++) {
+      temp.setType(i);
+      if (i != 20) {
+        after.setType(i + 1);
+        if (!(temp.getDescription().equals(after.getDescription()))) {
+          end = i;
+          if (start == end) {
+            monsterList.add(end + ": " + temp.getDescription());
+          } else {
+            monsterList.add(start + "-" + end + ": " + temp.getDescription());
+          }
+          start = i + 1;
+        }
+      } else {
+        monsterList.add("20: " + temp.getDescription());
+      }
+    }
+
+    return monsterList;
+  }
+
+  public void addTreasure(int num) {
+    this.getChamber(num).addTreasure(tempTreasure);
+  }
+
+  public void addMonster(int num) {
+    D20 myDie = new D20();
+    Monster newMonster = new Monster();
+    newMonster.setType(myDie.roll());
+    this.getChamber(num).addMonster(newMonster);
+  }
+
+  public void addMonsterPassage(int num) {
+    D20 myDie = new D20();
+    Monster newMonster = new Monster();
+    int size;
+    newMonster.setType(myDie.roll());
+    size = this.getPassage(num).getMonsterSize();
+    if (size != 0) {
+      this.getPassage(num).addMonster(newMonster,1);
+    } else {
+      this.getPassage(num).addMonster(newMonster,0);
+    }
+  }
+
+  public String DeleteMonster(int num) {
+    if (this.getChamber(num).getMonsters().size() == 0) {
+      return "No Monster";
+    } else {
+      this.getChamber(num).deleteMonster();
+      return "Delete";
+    }
+
+  }
+
+  public String DeleteMonsterPassage(int num) {
+    int size = this.getPassage(num).getMonsterSize();
+    if (size == 0) {
+      return "No Monster";
+    } else if (size == 1){
+      this.getPassage(num).deleteMonster(0);
+      return "Delete";
+    } else {
+      this.getPassage(num).deleteMonster(1);
+      return "Delete";
+    }
   }
 
 

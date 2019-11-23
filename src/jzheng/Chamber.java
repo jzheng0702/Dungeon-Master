@@ -15,7 +15,7 @@ import java.util.ArrayList;
 
 public class Chamber extends Space {
 
- /**
+  /**
   * determine the contents of the chamber.
   */
   private ChamberContents myContents;
@@ -63,127 +63,134 @@ public class Chamber extends Space {
     }
 
 
-}
-
-/**
-* constructor with two param.
-* @param theShape the shape of the chamber
-* @param theContents the content of the chamber
-*/
-public Chamber(ChamberShape theShape, ChamberContents theContents) {
-  this.myContents = theContents;
-  this.setShape(theShape);
-  while (mySize.getNumExits() == 0) {
-    mySize.setNumExits();
   }
-}
 
-/**
-* set the shape of the chamber.
-* @param theShape the shape of the chamber
-*/
-public void setShape(ChamberShape theShape) {
-  this.mySize = theShape;
-}
+  /**
+  * constructor with two param.
+  * @param theShape the shape of the chamber
+  * @param theContents the content of the chamber
+  */
+  public Chamber(ChamberShape theShape, ChamberContents theContents) {
+    this.myContents = theContents;
+    this.setShape(theShape);
+    while (mySize.getNumExits() == 0) {
+      mySize.setNumExits();
+    }
+  }
 
-/**
-* return all the doors.
-* @return the list of the doors
-*/
-public ArrayList<Door> getDoors() {
-  return myDoors;
-}
+  /**
+  * set the shape of the chamber.
+  * @param theShape the shape of the chamber
+  */
+  public void setShape(ChamberShape theShape) {
+    this.mySize = theShape;
+  }
 
-/**
-* add a monster to the current LIST.
-* @param theMonster the new Monster
-*/
-public void addMonster(Monster theMonster) {
-  myMonsters.add(theMonster);
-}
+  /**
+  * return all the doors.
+  * @return the list of the doors
+  */
+  public ArrayList<Door> getDoors() {
+    return myDoors;
+  }
 
-/**
-* get the monster array list.
-* @return the list of Monsters
-*/
-public ArrayList<Monster> getMonsters() {
-  return myMonsters;
-}
+  /**
+  * add a monster to the current LIST.
+  * @param theMonster the new Monster
+  */
+  public void addMonster(Monster theMonster) {
+    myMonsters.add(theMonster);
+  }
 
+  /**
+  * delete a monster to the current LIST.
+  */
+  public void deleteMonster() {
+    myMonsters.remove(this.getMonsters().size() - 1);
+  }
 
-/**
-* add a treasure to the list.
-* @param theTreasure the new treasure
-*/
-public void addTreasure(Treasure theTreasure) {
-  myTreasures.add(theTreasure);
-
-}
-
-/**
-* return the chamber shape.
-* @return the chamber shape
-*/
-public ChamberShape getChamberShape() {
-  return this.mySize;
-
-}
-
-/**
-* get the treasure list.
-* @return the array list of the treasure
-*/
-public ArrayList<Treasure> getTreasureList() {
-  return myTreasures;
-}
+  /**
+  * get the monster array list.
+  * @return the list of Monsters
+  */
+  public ArrayList<Monster> getMonsters() {
+    return myMonsters;
+  }
 
 
-/**
-* get the description of the entire chamber.
-* @return the description String
-*/
-@Override
-public String getDescription() {
-  /*need to fix this part*/
-  String temp = "The chamber's shape is " + this.getChamberShape().getShape() + ". The chamber content is " + myContents.getDescription() + ". ";
-  int i;
+  /**
+  * add a treasure to the list.
+  * @param theTreasure the new treasure
+  */
+  public void addTreasure(Treasure theTreasure) {
+    myTreasures.add(theTreasure);
 
-  if (myContents.getDescription().contains("monster")) {
+  }
+
+  /**
+  * return the chamber shape.
+  * @return the chamber shape
+  */
+  public ChamberShape getChamberShape() {
+    return this.mySize;
+
+  }
+
+  /**
+  * get the treasure list.
+  * @return the array list of the treasure
+  */
+  public ArrayList<Treasure> getTreasureList() {
+    return myTreasures;
+  }
+
+
+  /**
+  * get the description of the entire chamber.
+  * @return the description String
+  */
+  @Override
+  public String getDescription() {
+    /*need to fix this part*/
+    String temp = "The chamber's shape is " + this.getChamberShape().getShape() + ". The chamber content is " + myContents.getDescription() + ". ";
+    int i;
+
+
     if (myMonsters.size() != 0) {
       temp = temp.concat(" The monsters are ");
       for (i = 0; i < myMonsters.size(); i++) {
         temp = temp.concat("(" + (i + 1) + ")" + myMonsters.get(i).getDescription() + ".");
       }
     }
-  }
 
-  if (myContents.getDescription().contains("treasure")) {
+
+
     if (myTreasures.size() != 0) {
       temp = temp.concat(" The treasures are ");
       for (i = 0; i < myTreasures.size(); i++) {
         temp = temp.concat("(" + (i + 1) + ")" + myTreasures.get(i).getDescription() + ".");
       }
     }
+
+
+    if (myDoors.size() != 0) {
+      temp = temp.concat(" This chamber connects to " + myDoors.size() + " doors. ");
+    }
+
+    return temp;
+
   }
 
-  if (myDoors.size() != 0) {
-    temp = temp.concat(" This chamber connects to " + myDoors.size() + " doors. ");
+
+  /**
+  * set the door.
+  * @param newDoor the new door
+  */
+  @Override
+  public void setDoor(Door newDoor) {
+    this.myDoors.add(newDoor);
+
   }
-
-  return temp;
-
-}
-
-
-/**
-* set the door.
-* @param newDoor the new door
-*/
-@Override
-public void setDoor(Door newDoor) {
-  this.myDoors.add(newDoor);
-
-}
 
 
 }

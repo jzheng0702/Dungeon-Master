@@ -31,6 +31,7 @@ public class GuiDemo<toReturn> extends Application {
   private Popup descriptionPane;
   private Stage primaryStage;  //The stage that is passed in on initialization
   private TextArea output;
+  private String currentSpace;
   private ComboBox<String> boxes = new ComboBox<String>();
 
   /*a call to start replaces a call to the constructor for a JavaFX GUI*/
@@ -66,12 +67,18 @@ public class GuiDemo<toReturn> extends Application {
   private HBox handler (Button myButton) {
     myButton.setOnAction(e -> {
       descriptionPane = createPopUp(200, 300, "");
-      HBox editChoice = new HBox();
+      VBox editChoice = new VBox();
       Button addT = createButton("Add Treasure");
+      addT = clickAddT(addT);
       Button deleteT = createButton("Delete Treasure");
+      deleteT = clickDeleteT(deleteT);
       Button addM = createButton("Add Monster");
+      addM = clickAddM(addM);
       Button deleteM = createButton("Delete Monster");
-      editChoice.getChildren().addAll(addT,deleteT,addM,deleteM);
+      deleteM = clickDeleteM(deleteM);
+      Button confirm = createButton("Confirm");
+      confirm = confirmButton(confirm);
+      editChoice.getChildren().addAll(addT,deleteT,addM,deleteM,confirm);
       descriptionPane.getContent().add(editChoice);
       descriptionPane.show(primaryStage);
     });
@@ -82,31 +89,92 @@ public class GuiDemo<toReturn> extends Application {
     });
 
     HBox layout = new HBox(10);
-    //layout.setStyle("-fx-background-color: white; -fx-padding: 10;");
     layout.getChildren().addAll(myButton, close);
-    //primaryStage.setScene(new Scene(layout));
-    //primaryStage.show();
-
-    /*
-    myButton.setOnAction(event -> {
-      descriptionPane = createPopUp(200, 300, "");
-      Button Treasure = createButton("Add Treasure");
-      Button close = createButton("Close Window");
-      close.setOnAction(e -> {
-        descriptionPane.hide();
-      });
-      descriptionPane.getContent().add(Treasure);
-      descriptionPane.getContent().add(close);
-      if (descriptionPane.isShowing()) {
-        descriptionPane.hide();
-        System.out.println("Hide here");
-      } else {
-        descriptionPane.show(primaryStage);
-      }
-      System.out.println("clicked on Door");
-    });*/
-
     return layout;
+  }
+
+
+  private Button clickAddT(Button myButton) {
+    myButton.setOnAction(event -> {
+      int i;
+      String treasureInfo;
+      String treasureListInfo = "Treasure List\n";
+      ObservableList<String> treasureList  = FXCollections.observableArrayList(theController.treasureList());
+      for (i = 0; i < treasureList.size(); i++) {
+        int count = i;
+        treasureListInfo = treasureListInfo.concat(treasureList.get(count) + "\n");
+      }
+      output.setText(treasureListInfo);
+      if (currentSpace.contains("Chamber")) {
+        treasureInfo = theController.addTempTreasure(getIndex(currentSpace));
+      } else {
+        treasureInfo = "Need to fix haha";
+        //theController.addTreasurePassage(getIndex(currentSpace));
+      }
+
+
+    });
+
+    return myButton;
+  }
+
+  private Button clickDeleteT(Button myButton) {
+    return myButton;
+  }
+
+
+
+  private Button clickAddM(Button myButton) {
+    myButton.setOnAction(event -> {
+      int i;
+      String monsterListInfo = "Monster List\n";
+      ObservableList<String> monsterList  = FXCollections.observableArrayList(theController.monsterList());
+      for (i = 0; i < monsterList.size(); i++) {
+        int count = i;
+        monsterListInfo = monsterListInfo.concat(monsterList.get(count) + "\n");
+      }
+      output.setText(monsterListInfo);
+      if (currentSpace.contains("Chamber")) {
+        theController.addMonster(getIndex(currentSpace));
+      } else {
+        theController.addMonsterPassage(getIndex(currentSpace));
+      }
+      //output.setText("Successfully added Monster to " + currentSpace);
+    });
+    return myButton;
+  }
+
+  private Button clickDeleteM(Button myButton) {
+    String result;
+    myButton.setOnAction(event -> {
+      if (currentSpace.contains("Chamber")) {
+        if (theController.DeleteMonster(getIndex(currentSpace)) == "No Monster") {
+          output.setText("There is no monster in " + currentSpace);
+        } else {
+          output.setText("Successfully removed Monster in " + currentSpace);
+        }
+      } else {
+        if (theController.DeleteMonsterPassage(getIndex(currentSpace)) == "No Monster") {
+          output.setText("There is no monster in " + currentSpace);
+        } else {
+          output.setText("Successfully removed Monster in " + currentSpace);
+        }
+      }
+    });
+    return myButton;
+  }
+
+  private Button confirmButton(Button myButton) {
+    myButton.setOnAction(event -> {
+      if (currentSpace.contains("Chamber")) {
+        theController.addTreasure(getIndex(currentSpace));
+      } else {
+        //theController.addTreasurePassage(getIndex(currentSpace));
+      }
+      output.setText("Successfully added a treasure to " + currentSpace);
+    });
+
+    return myButton;
   }
 
   private HBox setRight() {
@@ -129,7 +197,8 @@ public class GuiDemo<toReturn> extends Application {
     temp.setPrefHeight(150);
     temp.setOnMouseClicked((MouseEvent event)->{
       output.setText(this.getDescription(temp.getSelectionModel().getSelectedItem().toString()));
-      System.out.println("clicked on " + temp.getSelectionModel().getSelectedItem());
+      currentSpace = temp.getSelectionModel().getSelectedItem().toString();
+      System.out.println("clicked on " + currentSpace);
     });
 
     return temp;

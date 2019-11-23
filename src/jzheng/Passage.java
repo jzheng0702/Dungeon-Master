@@ -32,6 +32,11 @@ public class Passage extends Space {
   private ArrayList<Monster> myMonsters = new ArrayList<Monster>(1);
 
   /**
+  * number of monsters
+  */
+  private int numOfMonster;
+
+  /**
   * all the doors info.
   * @return ArrayList return all the doors that connect to the passage
   */
@@ -75,6 +80,17 @@ public class Passage extends Space {
   */
   public void addMonster(Monster theMonster, int i) {
     thePassageSections.get(i).addMonster(theMonster);
+    numOfMonster++;
+
+  }
+
+  /**
+  * remove a monster in section 'i' of the passage.
+  * @param i the index
+  */
+  public void deleteMonster(int i) {
+    thePassageSections.get(i).removeMonster();
+    numOfMonster--;
   }
 
   /**
@@ -88,6 +104,14 @@ public class Passage extends Space {
     }
 
     return null;
+  }
+
+  /**
+  * returns Monster array list's size
+  * @return monster array size
+  */
+  public int getMonsterSize() {
+    return numOfMonster;
   }
 
 

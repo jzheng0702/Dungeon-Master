@@ -84,6 +84,13 @@ public class PassageSection {
   }
 
   /**
+  * remove a monster.
+  */
+  public void removeMonster() {
+    this.myMonster = null;
+  }
+
+  /**
   * return description.
   * @return description
   */
