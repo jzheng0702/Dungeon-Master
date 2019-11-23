@@ -14,7 +14,7 @@ public class ChamberView extends GridPane {
 
 
     public ChamberView(int len, int wid){
-        floor = "/res/floor.png";
+       floor = "/res/floor.png";
        treasure = "/res/tres.png";
        length = len;
        width = wid; //user these values to decide the size of the view and how many tiles

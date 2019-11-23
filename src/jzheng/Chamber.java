@@ -5,6 +5,7 @@ import dnd.models.ChamberShape;
 import dnd.models.Monster;
 import dnd.models.Exit;
 import dnd.models.Treasure;
+import dnd.die.D20;
 import java.util.ArrayList;
 
 /**
@@ -44,14 +45,19 @@ public class Chamber extends Space {
   */
   private ArrayList<Exit> myExits;
 
+  /**
+  * my die.
+  */
+  private D20 myDie = new D20();
+
 
   /**
   * constructor with no param.
   */
   public Chamber() {
     this.myContents = new ChamberContents();
-    this.mySize = new ChamberShape();
-    mySize.setShape();
+    this.myContents.chooseContents(myDie.roll());
+    this.mySize = ChamberShape.selectChamberShape(myDie.roll());
     while (mySize.getNumExits() == 0) {
       mySize.setNumExits();
     }

@@ -27,26 +27,31 @@ public class A3 {
 
 
 
-    System.out.println("==================Level Generation=================");
+
+
+
+    /*System.out.println("==================Level Generation=================");
     System.out.println("====================Five Chambers==================");
     for (i = 0; i < level.getChambers().size(); i++) {
       myChamber = (Chamber)(level.getChambers()).get(i);
       System.out.println((i + 1) + ". " + myChamber.getDescription());
     }
-    System.out.println("===================================================");
+    System.out.println("===================================================");*/
 
     System.out.println("=======================Doors=======================");
     for (i = 0; i < level.getTargetMap().size(); i++) {
-      System.out.println((i + 1) + ". " + level.getDoor(i).getDescription());
+      //System.out.println((i + 1) + ". " + level.getDoor(i).getDescription());
+      System.out.println("The first space: " + level.getDoor(i).getSpaces().get(0).getDescription());
+      System.out.println("The second space: " + level.getDoor(i).getSpaces().get(1).getDescription());
     }
     System.out.println("===================================================");
 
-    System.out.println("=======================Passages====================");
+    /*System.out.println("=======================Passages====================");
     for (i = 0; i < level.getPassages().size(); i++) {
       passage = (Passage)(level.getPassages()).get(i);
       System.out.println((i + 1) + ". " + passage.getDescription());
     }
-    System.out.println("===================================================");
+    System.out.println("===================================================");*/
 
 
 

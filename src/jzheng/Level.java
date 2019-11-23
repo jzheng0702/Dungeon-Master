@@ -44,11 +44,13 @@ public class Level {
   */
   public Door addPassage(Door myDoor) {
     Passage newPassage = new Passage();
+    ArrayList<Chamber> answer = doorMap.get(myDoor);
 
-    for (int i = 0; i < doorMap.get(myDoor).size(); i++) {
+    for (int i = 0; i < answer.size(); i++) {
       newPassage = new Passage();
       this.addPassageSections(newPassage);
       newPassage.setDoor(myDoor);
+      myDoor.setSpaces(newPassage,answer.get(i));
       myPassages.add(newPassage);
 
     }
@@ -155,6 +157,7 @@ public class Level {
     }
     return null;
   }
+
 
 
   /**

@@ -67,7 +67,7 @@ public class Door {
   * @param flag boolean variable
   * @param roll the random number
   */
-  public void setTrapped(boolean flag, int... roll) {
+  public void setTrapped(boolean flag, int roll) {
     this.isTrapped = flag;
     if (this.isTrapped) {
       this.setTrapInfo(roll);
@@ -94,14 +94,9 @@ public class Door {
   * generate the trap's information.
   * @param roll the random number
   */
-  public void setTrapInfo(int... roll) {
-    D20 die = new D20();
+  public void setTrapInfo(int roll) {
     this.myTrap = new Trap();
-    if (roll == null) {
-      myTrap.setDescription(die.roll());
-    } else {
-      myTrap.setDescription(roll);
-    }
+    myTrap.chooseTrap(roll);
   }
 
   /**
