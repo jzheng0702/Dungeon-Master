@@ -133,6 +133,10 @@ public class Passage extends Space {
       temp = temp.concat((i + 1) + ". " + thePassageSections.get(i).getDescription() + ". ");
     }
 
+    if (myDoors.size() != 0) {
+      temp = temp.concat(" This passage connects to " + myDoors.size() + " doors. ");
+    }
+
     return temp;
   }
 

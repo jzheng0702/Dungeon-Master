@@ -10,6 +10,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.MenuButton;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -32,7 +33,7 @@ public class GuiDemo<toReturn> extends Application {
   private Popup descriptionPane;
   private Stage primaryStage;  //The stage that is passed in on initialization
   private TextArea output;
-  private MenuButton buttons;
+  private ComboBox<String> boxes = new ComboBox<String>();
 
   /*a call to start replaces a call to the constructor for a JavaFX GUI*/
   @Override
@@ -53,10 +54,9 @@ public class GuiDemo<toReturn> extends Application {
   private BorderPane setUpRoot() {
     BorderPane temp = new BorderPane();
     temp.setTop(new Label("All of the variables"));
-    buttons = new MenuButton("List of Doors");
-    temp.setRight(buttons);
     ObservableList<String> VarList = FXCollections.observableArrayList(theController.getChamberAndPassageList());
     temp.setLeft(createListView(VarList));
+    temp.setRight(boxes);
     output = new TextArea();
     output.setEditable(false);
     temp.setCenter(output);
@@ -76,21 +76,38 @@ public class GuiDemo<toReturn> extends Application {
   }
 
   private String getDescription(String info) {
+    BorderPane temp = new BorderPane();
     int i;
     int num = 0;
     if (info.contains("Chamber")) {
       num = getIndex(info);
-      buttons = setMenuPanel(num);
+      //buttons = setMenuPanel(num);
+      this.setMenu(num);
       return theController.getChamberDescription(num);
     } else {
       num = getIndex(info);
-      buttons = setMenuPanelPassage(num);
+      this.setMenuPassage(num);
       return theController.getPassageDescription(num);
     }
   }
 
   private int getIndex(String info) {
     return Integer.parseInt(String.valueOf(info.charAt(7))) - 1;
+  }
+
+  private void setMenu(int num) {
+    ObservableList<String> nameList = FXCollections.observableArrayList(theController.getNameList(theController.getChamber(num)));
+    //ComboBox<String> myComboBox = ;
+    //this.boxes = new ComboBox<String>();
+    this.boxes.setItems(nameList);
+    //myComboBox.setValue("A");
+  }
+
+  private void setMenuPassage(int num) {
+    ObservableList<String> nameList = FXCollections.observableArrayList(theController.getNameList(theController.getPassage(num)));
+    //this.boxes = new ComboBox<String>();
+    this.boxes.setItems(nameList);
+    //myComboBox.setValue("A");
   }
 
 
