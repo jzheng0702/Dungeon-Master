@@ -31,8 +31,12 @@ public class GuiDemo<toReturn> extends Application {
   private Popup descriptionPane;
   private Stage primaryStage;  //The stage that is passed in on initialization
   private TextArea output;
+  private TextField output2;
+  private TextField input;
   private String currentSpace;
   private ComboBox<String> boxes = new ComboBox<String>();
+  private int userChoice;
+  private int currentType;
 
   /*a call to start replaces a call to the constructor for a JavaFX GUI*/
   @Override
@@ -56,9 +60,7 @@ public class GuiDemo<toReturn> extends Application {
     ObservableList<String> VarList = FXCollections.observableArrayList(theController.getChamberAndPassageList());
     temp.setLeft(createListView(VarList));
     temp.setRight(setRight());
-    output = new TextArea();
-    output.setEditable(false);
-    temp.setCenter(output);
+    temp.setCenter(centreArea());
     Button editButton = createButton("Edit");
     temp.setBottom(handler(editButton));
     return temp;
@@ -66,7 +68,7 @@ public class GuiDemo<toReturn> extends Application {
 
   private HBox handler (Button myButton) {
     myButton.setOnAction(e -> {
-      descriptionPane = createPopUp(200, 300, "");
+      descriptionPane = createPopUp(200, 500, "");
       VBox editChoice = new VBox();
       Button addT = createButton("Add Treasure");
       addT = clickAddT(addT);
@@ -76,9 +78,7 @@ public class GuiDemo<toReturn> extends Application {
       addM = clickAddM(addM);
       Button deleteM = createButton("Delete Monster");
       deleteM = clickDeleteM(deleteM);
-      Button confirm = createButton("Confirm");
-      confirm = confirmButton(confirm);
-      editChoice.getChildren().addAll(addT,deleteT,addM,deleteM,confirm);
+      editChoice.getChildren().addAll(addT,deleteT,addM,deleteM);
       descriptionPane.getContent().add(editChoice);
       descriptionPane.show(primaryStage);
     });
@@ -88,9 +88,55 @@ public class GuiDemo<toReturn> extends Application {
       descriptionPane.hide();
     });
 
+
     HBox layout = new HBox(10);
     layout.getChildren().addAll(myButton, close);
     return layout;
+  }
+
+  private VBox centreArea() {
+    output = new TextArea();
+    output.setEditable(false);
+
+    output2 = new TextField();
+    output2.setEditable(false);
+
+    input = new TextField();
+    input.setEditable(false);
+
+    Button submit = createButton("Submit");
+    submit = getInput(submit);
+
+    Button confirm = createButton("Confirm");
+    confirm = confirmButton(confirm);
+
+    VBox layout = new VBox(10);
+    layout.getChildren().addAll(output,input,submit,output2,confirm);
+    return layout;
+  }
+
+  private Button getInput(Button myButton) {
+    myButton.setOnAction(event -> {
+      String choice;
+      String treasureInfo;
+      String monsterInfo;
+      if (input.getText() != null) {
+        choice = input.getText();
+        userChoice = Integer.parseInt(String.valueOf(choice));
+        if (currentType == 1) {
+          treasureInfo = theController.addTempTreasure(getIndex(currentSpace),userChoice);
+          output2.setText("You have choose treasure " + userChoice + " It is: " + treasureInfo + ", please hit confirm button to save changes");
+        } else {
+          monsterInfo = theController.addTempMonster(getIndex(currentSpace),userChoice);
+          output2.setText("You have choose monster " + userChoice + " It is: " + monsterInfo + ", please hit confirm button to save changes");
+        }
+      } else {
+        System.out.println("Nothing in here");
+      }
+
+    });
+
+    return myButton;
   }
 
 
@@ -104,13 +150,10 @@ public class GuiDemo<toReturn> extends Application {
         int count = i;
         treasureListInfo = treasureListInfo.concat(treasureList.get(count) + "\n");
       }
+      treasureListInfo = treasureListInfo.concat("Please choose one number from the list, enter it in the input box.");
       output.setText(treasureListInfo);
-      if (currentSpace.contains("Chamber")) {
-        treasureInfo = theController.addTempTreasure(getIndex(currentSpace));
-      } else {
-        treasureInfo = "Need to fix haha";
-        //theController.addTreasurePassage(getIndex(currentSpace));
-      }
+      input.setEditable(true);
+      currentType = 1;
 
 
     });
@@ -127,6 +170,7 @@ public class GuiDemo<toReturn> extends Application {
   private Button clickAddM(Button myButton) {
     myButton.setOnAction(event -> {
       int i;
+      String monsterInfo;
       String monsterListInfo = "Monster List\n";
       ObservableList<String> monsterList  = FXCollections.observableArrayList(theController.monsterList());
       for (i = 0; i < monsterList.size(); i++) {
@@ -134,12 +178,8 @@ public class GuiDemo<toReturn> extends Application {
         monsterListInfo = monsterListInfo.concat(monsterList.get(count) + "\n");
       }
       output.setText(monsterListInfo);
-      if (currentSpace.contains("Chamber")) {
-        theController.addMonster(getIndex(currentSpace));
-      } else {
-        theController.addMonsterPassage(getIndex(currentSpace));
-      }
-      //output.setText("Successfully added Monster to " + currentSpace);
+      input.setEditable(true);
+      currentType = 2;
     });
     return myButton;
   }
@@ -167,28 +207,39 @@ public class GuiDemo<toReturn> extends Application {
   private Button confirmButton(Button myButton) {
     myButton.setOnAction(event -> {
       if (currentSpace.contains("Chamber")) {
-        theController.addTreasure(getIndex(currentSpace));
+        if (currentType == 1) {
+          theController.addTreasure(getIndex(currentSpace));
+          output.setText("Successfully added a treasure to " + currentSpace);
+        } else {
+          theController.addMonster(getIndex(currentSpace));
+          output.setText("Successfully added a monster to " + currentSpace);
+        }
       } else {
-        //theController.addTreasurePassage(getIndex(currentSpace));
+        if (currentType == 1) {
+          theController.addTreasurePassage(getIndex(currentSpace));
+          output.setText("Successfully added a treasure to " + currentSpace);
+        } else {
+          theController.addMonsterPassage(getIndex(currentSpace));
+          output.setText("Successfully added a monster to " + currentSpace);
+        }
       }
-      output.setText("Successfully added a treasure to " + currentSpace);
+
     });
 
     return myButton;
   }
 
-  private HBox setRight() {
+  private VBox setRight() {
     Button close = createButton("Close popup");
     close.setOnAction(e -> {
       descriptionPane.hide();
     });
 
-    HBox layout = new HBox(10);
+    VBox layout = new VBox(10);
     //layout.setStyle("-fx-background-color: white; -fx-padding: 10;");
     layout.getChildren().addAll(boxes, close);
 
     return layout;
-
   }
 
   private Node createListView(ObservableList<String> spaces){
@@ -293,9 +344,7 @@ public class GuiDemo<toReturn> extends Application {
         TextArea temp = (TextArea) t;
         temp.setText(text);
       }
-
     }
-
   }
 
 

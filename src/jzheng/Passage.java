@@ -1,6 +1,7 @@
 package jzheng;
 
 import dnd.models.Monster;
+import dnd.models.Treasure;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -35,6 +36,11 @@ public class Passage extends Space {
   * number of monsters
   */
   private int numOfMonster;
+
+  /**
+  * number of treasures
+  */
+  private int numOfTreasure;
 
   /**
   * all the doors info.
@@ -94,6 +100,26 @@ public class Passage extends Space {
   }
 
   /**
+  * add a treasure to section 'i' of the passage.
+  * @param theTreasure the new monster
+  * @param i the index
+  */
+  public void addTreasure(Treasure theTreasure, int i) {
+    thePassageSections.get(i).addTreasure(theTreasure);
+    numOfTreasure++;
+
+  }
+
+  /**
+  * remove a treasure in section 'i' of the passage.
+  * @param i the index
+  */
+  public void deleteTreasure(int i) {
+    thePassageSections.get(i).removeTreasure();
+    numOfTreasure--;
+  }
+
+  /**
   * returns Monster door in section 'i'. If there is no Monster, returns null.
   * @return Monster the monster
   * @param i the index
@@ -112,6 +138,14 @@ public class Passage extends Space {
   */
   public int getMonsterSize() {
     return numOfMonster;
+  }
+
+  /**
+  * returns treasure array list's size
+  * @return treasure array size
+  */
+  public int getTreasureSize() {
+    return numOfTreasure;
   }
 
 

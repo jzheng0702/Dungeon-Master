@@ -40,8 +40,6 @@ public class Controller {
       doors = buffer.getDoors();
     }
 
-
-
     for (i = 0; i < doors.size(); i++) {
       nameList.add("Door" + (i + 1));
     }
@@ -58,11 +56,16 @@ public class Controller {
     return myPassage.getDoor(index).getDescription();
   }
 
-  public String addTempTreasure(int num) {
-    Percentile myDie = new Percentile();
+  public String addTempTreasure(int num,int treasureNum) {
     tempTreasure = new Treasure();
-    tempTreasure.chooseTreasure(myDie.roll());
+    tempTreasure.chooseTreasure(treasureNum);
     return tempTreasure.getDescription();
+  }
+
+  public String addTempMonster(int num,int monsterNum) {
+    tempMonster = new Monster();
+    tempMonster.setType(monsterNum);
+    return tempMonster.getDescription();
   }
 
   public ArrayList treasureList() {
@@ -121,23 +124,39 @@ public class Controller {
     this.getChamber(num).addTreasure(tempTreasure);
   }
 
+  public void addTreasurePassage(int num) {
+    int size = this.getPassage(num).getTreasureSize();
+
+    if (size < 2) {
+      if (size == 0) {
+        this.getPassage(num).addTreasure(tempTreasure,0);
+      } else {
+        this.getPassage(num).addTreasure(tempTreasure,1);
+      }
+    } else {
+      PassageSection temp = new PassageSection();
+      this.getPassage(num).addPassageSection(temp);
+      this.getPassage(num).addTreasure(tempTreasure,size);
+    }
+  }
+
   public void addMonster(int num) {
-    D20 myDie = new D20();
-    Monster newMonster = new Monster();
-    newMonster.setType(myDie.roll());
-    this.getChamber(num).addMonster(newMonster);
+    this.getChamber(num).addMonster(tempMonster);
   }
 
   public void addMonsterPassage(int num) {
-    D20 myDie = new D20();
-    Monster newMonster = new Monster();
-    int size;
-    newMonster.setType(myDie.roll());
-    size = this.getPassage(num).getMonsterSize();
-    if (size != 0) {
-      this.getPassage(num).addMonster(newMonster,1);
+    int size = this.getPassage(num).getMonsterSize();
+
+    if (size < 2) {
+      if (size == 0) {
+        this.getPassage(num).addMonster(tempMonster,0);
+      } else {
+        this.getPassage(num).addMonster(tempMonster,1);
+      }
     } else {
-      this.getPassage(num).addMonster(newMonster,0);
+      PassageSection temp = new PassageSection();
+      this.getPassage(num).addPassageSection(temp);
+      this.getPassage(num).addMonster(tempMonster,size);
     }
   }
 

@@ -1,6 +1,7 @@
 package jzheng;
 
 import dnd.models.Monster;
+import dnd.models.Treasure;
 
 /**
 * @author     jzheng06@uoguelph.ca
@@ -22,6 +23,11 @@ public class PassageSection {
   * the monster instance variable.
   */
   private Monster myMonster;
+
+  /**
+  * the treasure instance variable.
+  */
+  private Treasure myTreasure;
 
 
   /**
@@ -91,6 +97,21 @@ public class PassageSection {
   }
 
   /**
+  * add a new treasures.
+  * @param theTreasure the new treasure
+  */
+  public void addTreasure(Treasure theTreasure) {
+    this.myTreasure = theTreasure;
+  }
+
+  /**
+  * remove a treasure.
+  */
+  public void removeTreasure() {
+    this.myTreasure = null;
+  }
+
+  /**
   * return description.
   * @return description
   */
@@ -99,6 +120,9 @@ public class PassageSection {
     temp = myDescription;
     if (myMonster != null) {
       temp = temp.concat(",the monster is " + myMonster.getDescription());
+    }
+    if (myTreasure != null) {
+      temp = temp.concat(",the treasure is " + myTreasure.getDescription());
     }
     if (myDoor != null) {
       temp = temp.concat(", this passage is connect to the door and here is the " + myDoor.getDescription());
