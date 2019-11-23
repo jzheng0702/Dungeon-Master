@@ -43,7 +43,9 @@ public class Controller {
   }
 
   public String getDoorDescription(Chamber myChamber, int index) {
-    return myChamber.getDoors().get(index).getDescription();
+    String temp = myChamber.getDoors().get(index).getDescription();
+    temp = temp.concat("\nLinked to Chamber and Passage, need to fix");
+    return temp;
   }
 
   public String getDoorDescriptionPassage(Passage myPassage, int index) {

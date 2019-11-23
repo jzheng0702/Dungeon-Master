@@ -54,13 +54,73 @@ public class GuiDemo<toReturn> extends Application {
     temp.setTop(new Label("All of the variables"));
     ObservableList<String> VarList = FXCollections.observableArrayList(theController.getChamberAndPassageList());
     temp.setLeft(createListView(VarList));
-    temp.setRight(boxes);
+    temp.setRight(setRight());
     output = new TextArea();
     output.setEditable(false);
     temp.setCenter(output);
-    Button editButton = new Button("Edit");
-    temp.setBottom(editButton);
+    Button editButton = createButton("Edit");
+    temp.setBottom(handler(editButton));
     return temp;
+  }
+
+  private HBox handler (Button myButton) {
+    myButton.setOnAction(e -> {
+      descriptionPane = createPopUp(200, 300, "");
+      HBox editChoice = new HBox();
+      Button addT = createButton("Add Treasure");
+      Button deleteT = createButton("Delete Treasure");
+      Button addM = createButton("Add Monster");
+      Button deleteM = createButton("Delete Monster");
+      editChoice.getChildren().addAll(addT,deleteT,addM,deleteM);
+      descriptionPane.getContent().add(editChoice);
+      descriptionPane.show(primaryStage);
+    });
+
+    Button close = createButton("Close popup");
+    close.setOnAction(e -> {
+      descriptionPane.hide();
+    });
+
+    HBox layout = new HBox(10);
+    //layout.setStyle("-fx-background-color: white; -fx-padding: 10;");
+    layout.getChildren().addAll(myButton, close);
+    //primaryStage.setScene(new Scene(layout));
+    //primaryStage.show();
+
+    /*
+    myButton.setOnAction(event -> {
+      descriptionPane = createPopUp(200, 300, "");
+      Button Treasure = createButton("Add Treasure");
+      Button close = createButton("Close Window");
+      close.setOnAction(e -> {
+        descriptionPane.hide();
+      });
+      descriptionPane.getContent().add(Treasure);
+      descriptionPane.getContent().add(close);
+      if (descriptionPane.isShowing()) {
+        descriptionPane.hide();
+        System.out.println("Hide here");
+      } else {
+        descriptionPane.show(primaryStage);
+      }
+      System.out.println("clicked on Door");
+    });*/
+
+    return layout;
+  }
+
+  private HBox setRight() {
+    Button close = createButton("Close popup");
+    close.setOnAction(e -> {
+      descriptionPane.hide();
+    });
+
+    HBox layout = new HBox(10);
+    //layout.setStyle("-fx-background-color: white; -fx-padding: 10;");
+    layout.getChildren().addAll(boxes, close);
+
+    return layout;
+
   }
 
   private Node createListView(ObservableList<String> spaces){
@@ -104,11 +164,7 @@ public class GuiDemo<toReturn> extends Application {
       boxes.setOnAction(event -> {
         descriptionPane = createPopUp(200, 300, theController.getDoorDescription(theController.getChamber(num),count));
         //descriptionPane.show(primaryStage);
-        if (!descriptionPane.isShowing()) {
-          descriptionPane.show(primaryStage);
-        } else {
-          descriptionPane.hide();
-        }
+        descriptionPane.show(primaryStage);
         System.out.println("clicked on Door");
       });
     }
@@ -130,7 +186,6 @@ public class GuiDemo<toReturn> extends Application {
           descriptionPane.hide();
         }
         System.out.println("clicked on Door");
-        descriptionPane.hide();
       });
     }
 
@@ -155,7 +210,7 @@ public class GuiDemo<toReturn> extends Application {
   /*generic button creation method ensure that all buttons will have a
   similar style and means that the style only need to be in one place
   */
-  private Button createButton(String text, String format) {
+  private Button createButton(String text) {
     Button btn = new Button();
     btn.setText(text);
     btn.setStyle("");
