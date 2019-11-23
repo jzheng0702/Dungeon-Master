@@ -9,9 +9,7 @@ import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.MenuButton;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
@@ -60,6 +58,8 @@ public class GuiDemo<toReturn> extends Application {
     output = new TextArea();
     output.setEditable(false);
     temp.setCenter(output);
+    Button editButton = new Button("Edit");
+    temp.setBottom(editButton);
     return temp;
   }
 
@@ -81,7 +81,6 @@ public class GuiDemo<toReturn> extends Application {
     int num = 0;
     if (info.contains("Chamber")) {
       num = getIndex(info);
-      //buttons = setMenuPanel(num);
       this.setMenu(num);
       return theController.getChamberDescription(num);
     } else {
@@ -96,64 +95,47 @@ public class GuiDemo<toReturn> extends Application {
   }
 
   private void setMenu(int num) {
+    int i;
     ObservableList<String> nameList = FXCollections.observableArrayList(theController.getNameList(theController.getChamber(num)));
-    //ComboBox<String> myComboBox = ;
-    //this.boxes = new ComboBox<String>();
     this.boxes.setItems(nameList);
-    //myComboBox.setValue("A");
+
+    for (i = 0; i < boxes.getItems().size(); i++) {
+      int count = i;
+      boxes.setOnAction(event -> {
+        descriptionPane = createPopUp(200, 300, theController.getDoorDescription(theController.getChamber(num),count));
+        //descriptionPane.show(primaryStage);
+        if (!descriptionPane.isShowing()) {
+          descriptionPane.show(primaryStage);
+        } else {
+          descriptionPane.hide();
+        }
+        System.out.println("clicked on Door");
+      });
+    }
   }
 
   private void setMenuPassage(int num) {
+    int i;
     ObservableList<String> nameList = FXCollections.observableArrayList(theController.getNameList(theController.getPassage(num)));
-    //this.boxes = new ComboBox<String>();
     this.boxes.setItems(nameList);
-    //myComboBox.setValue("A");
-  }
 
-
-  private MenuButton setMenuPanel(int num) {
-    int i;
-
-    ObservableList<String> nameList = FXCollections.observableArrayList(theController.getNameList(theController.getChamber(num)));
-    MenuItem myItems[] = new MenuItem[nameList.size()];
-
-    for (i = 0; i < nameList.size(); i++) {
+    for (i = 0; i < boxes.getItems().size(); i++) {
       int count = i;
-      myItems[i] = new MenuItem(nameList.get(i));
-      myItems[i].setOnAction(event -> {
-        descriptionPane = createPopUp(200, 300, theController.getDoorDescription(theController.getChamber(num),count));
-        descriptionPane.show(primaryStage);
-        System.out.println("clicked on Door");
-      });
-    }
-
-    MenuButton menuButton = new MenuButton("List of Doors",null, myItems);
-
-    return menuButton;
-
-  }
-
-  private MenuButton setMenuPanelPassage(int num) {
-    int i;
-
-    ObservableList<String> nameList = FXCollections.observableArrayList(theController.getNameList(theController.getPassage(num)));
-    MenuItem myItems[] = new MenuItem[nameList.size()];
-
-    for (i = 0; i < nameList.size(); i++) {
-      int count = i;
-      myItems[i] = new MenuItem(nameList.get(i));
-      myItems[i].setOnAction(event -> {
+      //String buffer = boxes.getItems().get(i);
+      boxes.setOnAction(event -> {
         descriptionPane = createPopUp(200, 300, theController.getDoorDescriptionPassage(theController.getPassage(num),count));
-        descriptionPane.show(primaryStage);
+        if (!descriptionPane.isShowing()) {
+          descriptionPane.show(primaryStage);
+        } else {
+          descriptionPane.hide();
+        }
         System.out.println("clicked on Door");
+        descriptionPane.hide();
       });
     }
 
-    MenuButton menuButton = new MenuButton("List of Doors",null, myItems);
-
-    return menuButton;
-
   }
+
 
   /* an example of a popup area that can be set to nearly any
   type of node
