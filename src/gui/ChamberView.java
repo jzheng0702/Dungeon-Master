@@ -6,7 +6,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 
-public class ChamberView extends GridPane {
+public class ChamberView extends GridPane implements java.io.Serializable{
     private String floor;
     private String treasure;
     private int length;

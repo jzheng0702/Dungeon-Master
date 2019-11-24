@@ -8,7 +8,7 @@ import dnd.models.Treasure;
 * @version    1.3
 */
 
-public class PassageSection {
+public class PassageSection implements java.io.Serializable{
   /**
   * the description of the passage section.
   */

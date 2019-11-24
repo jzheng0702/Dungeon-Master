@@ -5,7 +5,7 @@ package jzheng;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class A3 {
+public class A3 implements java.io.Serializable{
   protected A3() {
     throw new UnsupportedOperationException();
   }

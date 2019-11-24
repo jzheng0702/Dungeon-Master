@@ -8,7 +8,7 @@ import java.util.HashMap;
 * @author     jzheng06@uoguelph.ca
 * @version    1.3
 */
-public class Level {
+public class Level implements java.io.Serializable{
   /**
   * my passages.
   */

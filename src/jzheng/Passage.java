@@ -11,7 +11,7 @@ import java.util.HashMap;
 * @version    1.3
 */
 
-public class Passage extends Space {
+public class Passage extends Space implements java.io.Serializable{
   /**
   * my arraylist instance variable, record all the passage sections.
   */

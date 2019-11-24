@@ -13,7 +13,7 @@ import java.util.ArrayList;
 * @version    1.3
 */
 
-public class Chamber extends Space {
+public class Chamber extends Space implements java.io.Serializable{
 
   /**
   * determine the contents of the chamber.

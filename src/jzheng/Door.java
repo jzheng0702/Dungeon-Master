@@ -10,7 +10,7 @@ import dnd.die.D20;
 * @version    1.3
 */
 
-public class Door {
+public class Door implements java.io.Serializable{
 
   /**
   * my exit LIST.

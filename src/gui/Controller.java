@@ -7,10 +7,11 @@ import jzheng.Space;
 import jzheng.Door;
 import jzheng.PassageSection;
 import java.util.ArrayList;
+import java.io.*;
 import dnd.models.Monster;
 import dnd.models.Treasure;
 
-public class Controller {
+public class Controller implements java.io.Serializable {
   private GuiDemo myGui;
   private Level myLevel;
   private Treasure tempTreasure;
@@ -48,7 +49,6 @@ public class Controller {
 
   public String getDoorDescription(Chamber myChamber, int index) {
     String temp = myChamber.getDoors().get(index).getDescription();
-    temp = temp.concat("\nLinked to Chamber and Passage, need to fix");
     return temp;
   }
 
@@ -254,25 +254,22 @@ public class Controller {
   }
 
 
-  public ArrayList<String> getDoorVar(){
-    int i;
-    int size = myLevel.getTargetMap().size();
+  public ArrayList<String> getDoorVar(int i){
     //ArrayList<Door> doors = myLevel.getDoors();
     ArrayList<String> nameList = new ArrayList<>();
-    for (i = 0; i < size; i++) {
-      ArrayList<Space> spaces = myLevel.getDoor(i).getSpaces();
-      if (spaces.get(0) instanceof Chamber) {
-        nameList.add("Chamber");
-      } else {
-        nameList.add("Passage");
-      }
-
-      if (spaces.get(1) instanceof Chamber) {
-        nameList.add("Chamber");
-      } else {
-        nameList.add("Passage");
-      }
+    ArrayList<Space> spaces = myLevel.getDoor(i).getSpaces();
+    if (spaces.get(0) instanceof Chamber) {
+      nameList.add("Chamber");
+    } else {
+      nameList.add("Passage");
     }
+
+    if (spaces.get(1) instanceof Chamber) {
+      nameList.add("Chamber");
+    } else {
+      nameList.add("Passage");
+    }
+
 
     return nameList;
   }
@@ -332,7 +329,40 @@ public class Controller {
 
   public String getNewDescription(){
     //return "this would normally be a description pulled from the model of the Dungeon level.";
-    return String.join("\n", getDoorVar());
+    return String.join("\n");
+  }
+
+  public String saveFile(String path){
+    try {
+      FileOutputStream fileOut = new FileOutputStream(path + ".ser");
+      ObjectOutputStream out = new ObjectOutputStream(fileOut);
+      out.writeObject(myLevel);
+      out.close();
+      fileOut.close();
+      return "Serialized data is saved in " + path + ".ser";
+    } catch (IOException i) {
+      i.printStackTrace();
+      return "Error occurs";
+    }
+  }
+
+  public void loadFile(String path){
+    myLevel = null;
+    try {
+      FileInputStream fileIn = new FileInputStream(path + ".ser");
+      ObjectInputStream in = new ObjectInputStream(fileIn);
+      myLevel = (Level)in.readObject();
+      in.close();
+      fileIn.close();
+      System.out.println("Serialized data is loaded in " + path + ".ser");
+    } catch (IOException i) {
+      i.printStackTrace();
+      return;
+    } catch (ClassNotFoundException c) {
+      System.out.println("Level class not found");
+      c.printStackTrace();
+      return;
+    }
   }
 
 }

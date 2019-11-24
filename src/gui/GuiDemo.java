@@ -10,6 +10,9 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.ToolBar;
+import javafx.scene.control.MenuButton;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
@@ -21,7 +24,7 @@ import javafx.stage.Popup;
 import javafx.stage.Stage;
 
 
-public class GuiDemo<toReturn> extends Application {
+public class GuiDemo<toReturn> extends Application implements java.io.Serializable{
   /* Even if it is a GUI it is useful to have instance variables
   so that you can break the processing up into smaller methods that have
   one responsibility.
@@ -31,6 +34,7 @@ public class GuiDemo<toReturn> extends Application {
   private Popup descriptionPane;
   private Stage primaryStage;  //The stage that is passed in on initialization
   private TextArea output;
+  private TextArea doorDescription;
   private TextField output2;
   private TextField input;
   private String currentSpace;
@@ -48,7 +52,20 @@ public class GuiDemo<toReturn> extends Application {
     /*Border Panes have  top, left, right, center and bottom sections */
     root = setUpRoot();
     descriptionPane = createPopUp(200, 300, "Example Description of something");
-    Scene scene = new Scene(root, 500, 500);
+    Scene scene = new Scene(root, 700, 700);
+    primaryStage.setTitle("Dungeon");
+    primaryStage.setScene(scene);
+    primaryStage.show();
+
+  }
+
+  public void startLoad(Stage assignedStage) {
+    /*Initializing instance variables */
+    primaryStage = assignedStage;
+    /*Border Panes have  top, left, right, center and bottom sections */
+    root = setUpRoot();
+    descriptionPane = createPopUp(200, 300, "Example Description of something");
+    Scene scene = new Scene(root, 700, 700);
     primaryStage.setTitle("Dungeon");
     primaryStage.setScene(scene);
     primaryStage.show();
@@ -57,7 +74,8 @@ public class GuiDemo<toReturn> extends Application {
 
   private BorderPane setUpRoot() {
     BorderPane temp = new BorderPane();
-    temp.setTop(new Label("All of the variables"));
+    //new Label("All of the variables")
+    temp.setTop(myTop());
     ObservableList<String> VarList = FXCollections.observableArrayList(theController.getChamberAndPassageList());
     temp.setLeft(createListView(VarList));
     temp.setRight(setRight());
@@ -95,6 +113,29 @@ public class GuiDemo<toReturn> extends Application {
     return layout;
   }
 
+  private ToolBar myTop() {
+    ToolBar myToolBar = new ToolBar();
+
+    MenuItem saveFile = new MenuItem("Save File");
+    saveFile.setOnAction(event -> {
+      output.setText("Save file!\nPlease enter the full path of the file(including the name of the file) in the input box! Click submit when you're done\nExample: /file/a4/fileName");
+      input.setEditable(true);
+      currentStatus = 3;
+    });
+    MenuItem loadFile = new MenuItem("Load File");
+    loadFile.setOnAction(event -> {
+      output.setText("Load File!Please enter the full path of the file(includeing the name of the file) in the input box! Click submit when you're done\nExample: /file/a4/fileName");
+      input.setEditable(true);
+      currentStatus = 4;
+    });
+
+    MenuButton file = new MenuButton("File", null, saveFile,loadFile);
+
+
+    myToolBar.getItems().add(file);
+    return myToolBar;
+  }
+
   private VBox centreArea() {
     output = new TextArea();
     output.setEditable(false);
@@ -123,9 +164,8 @@ public class GuiDemo<toReturn> extends Application {
       String monsterInfo;
       if (input.getText() != null) {
         choice = input.getText();
-        userChoice = Integer.parseInt(String.valueOf(choice));
-        System.out.println(userChoice);
         if (currentStatus == 1) {
+          userChoice = Integer.parseInt(String.valueOf(choice));
           if (currentType == 1) {
             treasureInfo = theController.addTempTreasure(userChoice);
             output2.setText("You have choose treasure " + userChoice + " It is: " + treasureInfo + ", please hit confirm button to save changes");
@@ -133,7 +173,8 @@ public class GuiDemo<toReturn> extends Application {
             monsterInfo = theController.addTempMonster(userChoice);
             output2.setText("You have choose monster " + userChoice + " It is: " + monsterInfo + ", please hit confirm button to save changes");
           }
-        } else {
+        } else if (currentStatus == 2) {
+          userChoice = Integer.parseInt(String.valueOf(choice));
           if (currentType == 1) {
             if (currentSpace.contains("Chamber")) {
               treasureInfo = theController.deleteTempTreasure(getIndex(currentSpace),userChoice);
@@ -149,6 +190,11 @@ public class GuiDemo<toReturn> extends Application {
             }
             output2.setText("You have choose monster " + userChoice + " It is: " + monsterInfo + ", please hit confirm button to save changes");
           }
+        } else if (currentStatus == 3){
+          output2.setText(theController.saveFile(choice));
+        } else if (currentStatus == 4) {
+          theController.loadFile(choice);
+          this.startLoad(primaryStage);
         }
 
       } else {
@@ -264,7 +310,7 @@ public class GuiDemo<toReturn> extends Application {
             theController.addMonster(getIndex(currentSpace));
             output.setText("Successfully added a monster to " + currentSpace);
           }
-        } else {
+        } else if (currentStatus == 2){
           if (currentType == 1) {
             theController.deleteTreasure(getIndex(currentSpace));
             output.setText("Successfully removed a treasure to " + currentSpace);
@@ -283,7 +329,7 @@ public class GuiDemo<toReturn> extends Application {
             theController.addMonsterPassage(getIndex(currentSpace));
             output.setText("Successfully added a monster to " + currentSpace);
           }
-        } else {
+        } else if (currentStatus == 2){
           if (currentType == 1) {
             theController.deleteTreasurePassage(getIndex(currentSpace));
             output.setText("Successfully removed a treasure to " + currentSpace);
@@ -300,14 +346,15 @@ public class GuiDemo<toReturn> extends Application {
   }
 
   private VBox setRight() {
-    Button close = createButton("Close popup");
-    close.setOnAction(e -> {
-      descriptionPane.hide();
-    });
+
+    doorDescription = new TextArea();
+    doorDescription.setPrefHeight(200);
+    doorDescription.setPrefWidth(200);
+    doorDescription.setEditable(false);
 
     VBox layout = new VBox(10);
     //layout.setStyle("-fx-background-color: white; -fx-padding: 10;");
-    layout.getChildren().addAll(boxes, close);
+    layout.getChildren().addAll(boxes,doorDescription);
 
     return layout;
   }
@@ -352,9 +399,7 @@ public class GuiDemo<toReturn> extends Application {
     for (i = 0; i < boxes.getItems().size(); i++) {
       int count = i;
       boxes.setOnAction(event -> {
-        descriptionPane = createPopUp(200, 300, theController.getDoorDescription(theController.getChamber(num),count));
-        //descriptionPane.show(primaryStage);
-        descriptionPane.show(primaryStage);
+        doorDescription.setText(theController.getDoorDescription(theController.getChamber(num),count));
         System.out.println("clicked on Door");
       });
     }
@@ -369,12 +414,7 @@ public class GuiDemo<toReturn> extends Application {
       int count = i;
       //String buffer = boxes.getItems().get(i);
       boxes.setOnAction(event -> {
-        descriptionPane = createPopUp(200, 300, theController.getDoorDescriptionPassage(theController.getPassage(num),count));
-        if (!descriptionPane.isShowing()) {
-          descriptionPane.show(primaryStage);
-        } else {
-          descriptionPane.hide();
-        }
+        doorDescription.setText(theController.getDoorDescriptionPassage(theController.getPassage(num),count));
         System.out.println("clicked on Door");
       });
     }
