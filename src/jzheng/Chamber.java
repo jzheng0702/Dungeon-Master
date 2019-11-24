@@ -1,6 +1,7 @@
 package jzheng;
 
 import dnd.models.ChamberContents;
+import dnd.exceptions.UnusualShapeException;
 import dnd.models.ChamberShape;
 import dnd.models.Monster;
 import dnd.models.Exit;
@@ -158,10 +159,15 @@ public class Chamber extends Space implements java.io.Serializable{
   */
   @Override
   public String getDescription() {
-    /*need to fix this part*/
-    String temp = "The chamber's shape is " + this.getChamberShape().getShape() + ". The chamber content is " + myContents.getDescription() + ". ";
     int i;
-
+    int area;
+    String temp = "The chamber's shape is " + this.getChamberShape().getShape() + ". The chamber content is " + myContents.getDescription() + ". \n";
+    try {
+      temp = temp.concat("The chamber's size is " + this.getChamberShape().getLength() + " * " + this.getChamberShape().getWidth() + "\n");
+    } catch(UnusualShapeException e){
+      area = this.getChamberShape().getArea();
+      temp = temp.concat("The chamber is an unusual shape, the area is " + area);
+    }
 
     if (myMonsters.size() != 0) {
       temp = temp.concat(" The monsters are ");
@@ -169,6 +175,7 @@ public class Chamber extends Space implements java.io.Serializable{
         temp = temp.concat("(" + (i + 1) + ")" + myMonsters.get(i).getDescription() + ".");
       }
     }
+    temp = temp.concat("\n");
 
 
 
@@ -178,7 +185,7 @@ public class Chamber extends Space implements java.io.Serializable{
         temp = temp.concat("(" + (i + 1) + ")" + myTreasures.get(i).getDescription() + ".");
       }
     }
-
+    temp = temp.concat("\n");
 
     if (myDoors.size() != 0) {
       temp = temp.concat(" This chamber connects to " + myDoors.size() + " doors. ");

@@ -7,74 +7,144 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 
 public class ChamberView extends GridPane implements java.io.Serializable{
-    private String floor;
-    private String treasure;
-    private int length;
-    private int width;
+  private String floor;
+  private String treasure;
+  private String monster;
+  private String openDoor;
+  private String closeDoor;
+  private String archway;
+  private int length;
+  private int width;
+  private Node[] tiles;
 
 
-    public ChamberView(int len, int wid){
-       floor = "/res/floor.png";
-       treasure = "/res/tres.png";
-       length = len;
-       width = wid; //user these values to decide the size of the view and how many tiles
+
+  public ChamberView(int len, int wid){
+
+    floor = "/res/floor.png";
+    treasure = "/res/tres.png";
+    monster = "/res/monster.png";
+    openDoor = "/res/openDoor.png";
+    closeDoor = "/res/closeDoor.png";
+    archway = "/res/archway.png";
+    length = len;
+    width = wid; //user these values to decide the size of the view and how many tiles
+
+    tiles = this.makeTiles(length * width);
+    this.addTiles();
 
 
-        Node[] tiles = makeTiles();
-        //should definitely be a loop and possibly a method
-        add(tiles[0],0,0,1,1);
-        add(tiles[1],0,1,1,1);
-        add(tiles[2],0,2,1,1);
-        add(tiles[3],0,3,1,1);
-        add(tiles[4],1,0,1,1);
-        add(tiles[5],1,1,1,1);
-        add(tiles[6],1,2,1,1);
-        add(tiles[7],1,3,1,1);
-        add(tiles[8],2,0,1,1);
-        add(tiles[9],2,1,1,1);
-        add(tiles[10],2,2,1,1);
-        add(tiles[11],2,3,1,1);
-        add(tiles[12],3,0,1,1);
-        add(tiles[13],3,1,1,1);
-        add(tiles[14],3,2,1,1);
-        add(tiles[15],3,3,1,1);
+  }
 
+
+  public void adding(int len, int wid) {
+    this.length = len;
+    this.width = wid;
+
+    this.getChildren().clear();
+    tiles = this.makeTiles(length * width);
+    this.addTiles();
+  }
+
+  public void addingPassage(int size) {
+    this.getChildren().clear();
+    tiles = this.makeTiles(size);
+    this.addPassageTiles(size);
+  }
+
+  public void addTreasure() {
+    int i;
+    int j;
+    int count = 0;
+    int size = length * width;
+    tiles[3] = this.floorFactory(treasure);
+    add(tiles[3],0,1,1,1);
+
+  }
+
+  public void addMonster() {
+    int i;
+    int j;
+    int count = 0;
+    int size = length * width;
+    add(floorFactory(monster),0,2,1,1);
+  }
+
+  public void addDoors(int num) {
+    int i;
+    int j;
+    int count = 0;
+    int size = length * width;
+    for (i = 0; i < length; i++) {
+      for (j = 0; j < length; j++) {
+        if (count == num) {
+          break;
+        } else {
+          add(floorFactory(openDoor),i,j,1,1);
+        }
+        count++;
+      }
     }
 
+  }
 
-    private Node[] makeTiles() {  //should have a parameter and a loop
+  private void addTiles() {
+    int i;
+    int j;
+    int count = 0;
+    int size = length * width;
 
-        Node[] toReturn = {
-                floorFactory(floor),
-                floorFactory(floor),
-                floorFactory(floor),
-                floorFactory(floor),
-                floorFactory(floor),
-                floorFactory(floor),
-                floorFactory(floor),
-                floorFactory(floor),
-                floorFactory(floor),
-                floorFactory(floor),
-                floorFactory(floor),
-                floorFactory(floor),
-                floorFactory(floor),
-                floorFactory(floor),
-                floorFactory(floor),
-                floorFactory(floor)
-        };
-        return toReturn;
+
+    for (i = 0; i < length; i++) {
+      for (j = 0; j < width; j++) {
+        if (count == size) {
+          break;
+        } else {
+          add(tiles[count],i,j,1,1);
+          count++;
+        }
+      }
     }
+  }
+
+  private void addPassageTiles(int size) {
+    int i;
+    int j;
+    int count = 0;
 
 
-    public Node floorFactory(String img) {
-        Image floor = new Image(getClass().getResourceAsStream(img));
-        Label toReturn = new Label();
-        ImageView imageView = new ImageView(floor);
-        imageView.setFitWidth(50);
-        imageView.setFitHeight(50);
-        toReturn.setGraphic(imageView);
-        return toReturn;
+    for (i = 0; i < size; i++) {
+      if (count == size) {
+        break;
+      } else {
+        add(tiles[count],0,i,1,1);
+        count++;
+      }
     }
+  }
+
+
+
+  private Node[] makeTiles(int size) {  //should have a parameter and a loop
+    int i;
+
+    Node[] toReturn = new Node[size];
+    for (i = 0; i < size; i++) {
+      toReturn[i] = floorFactory(floor);
+    }
+    return toReturn;
+  }
+
+
+  public Node floorFactory(String img) {
+    Image floor = new Image(getClass().getResourceAsStream(img));
+    Label toReturn = new Label();
+    ImageView imageView = new ImageView(floor);
+    imageView.setFitWidth(50);
+    imageView.setFitHeight(50);
+    toReturn.setGraphic(imageView);
+    return toReturn;
+  }
 
 
 }

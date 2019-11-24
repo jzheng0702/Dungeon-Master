@@ -10,16 +10,17 @@ import java.util.ArrayList;
 import java.io.*;
 import dnd.models.Monster;
 import dnd.models.Treasure;
+import dnd.exceptions.UnusualShapeException;
 
 public class Controller implements java.io.Serializable {
-  private GuiDemo myGui;
+  private Gui myGui;
   private Level myLevel;
   private Treasure tempTreasure;
   private Monster tempMonster;
   private int monsterLocation;
   private int treasureLocation;
 
-  public Controller(GuiDemo theGui){
+  public Controller(Gui theGui){
     myGui = theGui;
     myLevel = new Level();
     myLevel.levelFactory();
@@ -50,6 +51,14 @@ public class Controller implements java.io.Serializable {
   public String getDoorDescription(Chamber myChamber, int index) {
     String temp = myChamber.getDoors().get(index).getDescription();
     return temp;
+  }
+
+  public int getDoorSize(int index) {
+    return this.getChamber(index).getDoors().size();
+  }
+
+  public int getPassageSize(int index) {
+    return this.getPassage(index).getPassageSections().size();
   }
 
   public String getDoorDescriptionPassage(Passage myPassage, int index) {
@@ -300,6 +309,27 @@ public class Controller implements java.io.Serializable {
     Chamber myChamber;
     myChamber = (Chamber)(myLevel.getChambers()).get(index);
     return myChamber;
+  }
+
+  public int getChamberLength(int index) {
+    Chamber myChamber = this.getChamber(index);
+    return myChamber.getChamberShape().getLength();
+  }
+
+  public int getChamberWidth(int index) {
+    Chamber myChamber = this.getChamber(index);
+    return myChamber.getChamberShape().getWidth();
+  }
+
+  public int checkUnusualShape(int index) {
+    Chamber myChamber = this.getChamber(index);
+    try {
+      myChamber.getChamberShape().getLength();
+    } catch(UnusualShapeException e){
+      return 1;
+    }
+
+    return 0;
   }
 
   public String getPassageDescription(int index){

@@ -24,7 +24,7 @@ import javafx.stage.Popup;
 import javafx.stage.Stage;
 
 
-public class GuiDemo<toReturn> extends Application implements java.io.Serializable{
+public class Gui<toReturn> extends Application implements java.io.Serializable{
   /* Even if it is a GUI it is useful to have instance variables
   so that you can break the processing up into smaller methods that have
   one responsibility.
@@ -119,23 +119,35 @@ public class GuiDemo<toReturn> extends Application implements java.io.Serializab
     ToolBar myToolBar = new ToolBar();
 
     MenuItem saveFile = new MenuItem("Save File");
+    saveFile = saveFileHandler(saveFile);
+
+    MenuItem loadFile = new MenuItem("Load File");
+    loadFile = loadFileHandler(loadFile);
+
+    MenuButton file = new MenuButton("File", null, saveFile,loadFile);
+
+    myToolBar.getItems().add(file);
+    return myToolBar;
+  }
+
+  private MenuItem saveFileHandler(MenuItem saveFile) {
     saveFile.setOnAction(event -> {
       output.setText("Save file!\nPlease enter the full path of the file(including the name of the file) in the input box! Click submit when you're done\nExample: /file/a4/fileName");
       input.setEditable(true);
       currentStatus = 3;
     });
-    MenuItem loadFile = new MenuItem("Load File");
+
+    return saveFile;
+  }
+
+  private MenuItem loadFileHandler(MenuItem loadFile) {
     loadFile.setOnAction(event -> {
       output.setText("Load File!Please enter the full path of the file(includeing the name of the file) in the input box! Click submit when you're done\nExample: /file/a4/fileName");
       input.setEditable(true);
       currentStatus = 4;
     });
 
-    MenuButton file = new MenuButton("File", null, saveFile,loadFile);
-
-
-    myToolBar.getItems().add(file);
-    return myToolBar;
+    return loadFile;
   }
 
   private VBox centreArea() {
@@ -161,6 +173,7 @@ public class GuiDemo<toReturn> extends Application implements java.io.Serializab
     return layout;
   }
 
+
   private Button getInput(Button myButton) {
     myButton.setOnAction(event -> {
       String choice;
@@ -169,108 +182,138 @@ public class GuiDemo<toReturn> extends Application implements java.io.Serializab
       if (input.getText() != null) {
         choice = input.getText();
         if (currentStatus == 1) {
-          userChoice = Integer.parseInt(String.valueOf(choice));
-          if (currentType == 1) {
-            treasureInfo = theController.addTempTreasure(userChoice);
-            output2.setText("You have choose treasure " + userChoice + " It is: " + treasureInfo + ", please hit confirm button to save changes");
-          } else {
-            monsterInfo = theController.addTempMonster(userChoice);
-            output2.setText("You have choose monster " + userChoice + " It is: " + monsterInfo + ", please hit confirm button to save changes");
-          }
+          this.addStatus(choice);
         } else if (currentStatus == 2) {
-          userChoice = Integer.parseInt(String.valueOf(choice));
-          if (currentType == 1) {
-            if (currentSpace.contains("Chamber")) {
-              treasureInfo = theController.deleteTempTreasure(getIndex(currentSpace),userChoice);
-            } else {
-              treasureInfo = theController.deleteTempTreasurePassage(getIndex(currentSpace),userChoice);
-            }
-            output2.setText("You have choose treasure " + userChoice + " It is: " + treasureInfo + ", please hit confirm button to save changes");
-          } else {
-            if (currentSpace.contains("Chamber")) {
-              monsterInfo = theController.deleteTempMonster(getIndex(currentSpace),userChoice);
-            } else {
-              monsterInfo = theController.deleteTempMonsterPassage(getIndex(currentSpace),userChoice);
-            }
-            output2.setText("You have choose monster " + userChoice + " It is: " + monsterInfo + ", please hit confirm button to save changes");
-          }
+          this.deleteStatus(choice);
         } else if (currentStatus == 3){
           output2.setText(theController.saveFile(choice));
         } else if (currentStatus == 4) {
-          theController.loadFile(choice);
-          this.startLoad(primaryStage);
+          this.load(choice);
         }
-
       } else {
         System.out.println("Nothing in here");
       }
-
     });
 
     return myButton;
+  }
+
+  private void addStatus(String choice) {
+    userChoice = this.parsemyInt(choice);
+    if (currentType == 1) {
+      this.treasureAdd();
+    } else {
+      this.monsterAdd();
+    }
+  }
+
+  private void monsterAdd() {
+    String monsterInfo = theController.addTempMonster(userChoice);
+    output2.setText("You have choose monster " + userChoice + " It is: " + monsterInfo + ", please hit confirm button to save changes");
+  }
+
+  private void treasureAdd() {
+    String treasureInfo = theController.addTempTreasure(userChoice);
+    output2.setText("You have choose treasure " + userChoice + " It is: " + treasureInfo + ", please hit confirm button to save changes");
+  }
+
+  private void deleteStatus(String choice) {
+    userChoice = this.parsemyInt(choice);
+    if (currentType == 1) {
+      this.treasureDelete();
+    } else {
+      this.monsterDelete();
+    }
+  }
+
+  private void monsterDelete() {
+    String monsterInfo;
+    if (this.chamberOrPassage(currentSpace) == 1) {
+      monsterInfo = theController.deleteTempMonster(getIndex(currentSpace),userChoice);
+    } else {
+      monsterInfo = theController.deleteTempMonsterPassage(getIndex(currentSpace),userChoice);
+    }
+    output2.setText("You have choose monster " + userChoice + " It is: " + monsterInfo + ", please hit confirm button to save changes");
+  }
+
+  private void treasureDelete() {
+    String treasureInfo;
+    if (this.chamberOrPassage(currentSpace) == 1) {
+      treasureInfo = theController.deleteTempTreasure(getIndex(currentSpace),userChoice);
+    } else {
+      treasureInfo = theController.deleteTempTreasurePassage(getIndex(currentSpace),userChoice);
+    }
+    output2.setText("You have choose treasure " + userChoice + " It is: " + treasureInfo + ", please hit confirm button to save changes");
+  }
+
+  private int parsemyInt (String value) {
+    return Integer.parseInt(String.valueOf(value));
+  }
+
+  private void load(String choice) {
+    theController.loadFile(choice);
+    this.startLoad(primaryStage);
   }
 
 
   private Button clickAddT(Button myButton) {
     myButton.setOnAction(event -> {
-      int i;
-      String treasureInfo;
-      String treasureListInfo = "Treasure List\n";
-      ObservableList<String> treasureList  = FXCollections.observableArrayList(theController.treasureList());
-      for (i = 0; i < treasureList.size(); i++) {
-        int count = i;
-        treasureListInfo = treasureListInfo.concat(treasureList.get(count) + "\n");
-      }
-      treasureListInfo = treasureListInfo.concat("Please choose one number from the list, enter it in the input box.");
-      output.setText(treasureListInfo);
+      output.setText(this.treasureList());
       input.setEditable(true);
       currentType = 1;
       currentStatus = 1;
-
-
     });
 
     return myButton;
   }
 
+  private String treasureList() {
+    int i;
+    String treasureInfo;
+    String treasureListInfo = "Treasure List\n";
+    ObservableList<String> treasureList  = FXCollections.observableArrayList(theController.treasureList());
+    for (i = 0; i < treasureList.size(); i++) {
+      int count = i;
+      treasureListInfo = treasureListInfo.concat(treasureList.get(count) + "\n");
+    }
+    treasureListInfo = treasureListInfo.concat("Please choose one number from the list, enter it in the input box.");
+    return treasureListInfo;
+  }
+
   private Button clickDeleteT(Button myButton) {
     myButton.setOnAction(event -> {
-      int i;
-      String treasureInfo;
-      String treasureListInfo = "Treasure List\n";
-      ObservableList<String> treasureList;
-      if (currentSpace.contains("Chamber")) {
-        treasureList = FXCollections.observableArrayList(theController.treasureListCurrent(getIndex(currentSpace)));
-      } else {
-        treasureList = FXCollections.observableArrayList(theController.treasureListCurrentPassage(getIndex(currentSpace)));
-      }
-
-      for (i = 0; i < treasureList.size(); i++) {
-        int count = i;
-        treasureListInfo = treasureListInfo.concat(treasureList.get(count) + "\n");
-      }
-      treasureListInfo = treasureListInfo.concat("Please choose one number from the list, enter it in the input box.\n");
-      output.setText(treasureListInfo);
+      output.setText(this.treasureInfo());
       input.setEditable(true);
       currentType = 1;
       currentStatus = 2;
     });
     return myButton;
+  }
+
+  private String treasureInfo() {
+    int i;
+    String treasureInfo;
+    String treasureListInfo = "Treasure List\n";
+    ObservableList<String> treasureList;
+    if (currentSpace.contains("Chamber")) {
+      treasureList = FXCollections.observableArrayList(theController.treasureListCurrent(getIndex(currentSpace)));
+    } else {
+      treasureList = FXCollections.observableArrayList(theController.treasureListCurrentPassage(getIndex(currentSpace)));
+    }
+
+    for (i = 0; i < treasureList.size(); i++) {
+      int count = i;
+      treasureListInfo = treasureListInfo.concat(treasureList.get(count) + "\n");
+    }
+    treasureListInfo = treasureListInfo.concat("Please choose one number from the list, enter it in the input box.\n");
+    return treasureListInfo;
   }
 
 
 
   private Button clickAddM(Button myButton) {
     myButton.setOnAction(event -> {
-      int i;
-      String monsterInfo;
-      String monsterListInfo = "Monster List\n";
-      ObservableList<String> monsterList  = FXCollections.observableArrayList(theController.monsterList());
-      for (i = 0; i < monsterList.size(); i++) {
-        int count = i;
-        monsterListInfo = monsterListInfo.concat(monsterList.get(count) + "\n");
-      }
-      output.setText(monsterListInfo);
+      output.setText(this.monsterList());
       input.setEditable(true);
       currentType = 2;
       currentStatus = 1;
@@ -278,24 +321,21 @@ public class GuiDemo<toReturn> extends Application implements java.io.Serializab
     return myButton;
   }
 
+  private String monsterList() {
+    int i;
+    String monsterInfo;
+    String monsterListInfo = "Monster List\n";
+    ObservableList<String> monsterList  = FXCollections.observableArrayList(theController.monsterList());
+    for (i = 0; i < monsterList.size(); i++) {
+      int count = i;
+      monsterListInfo = monsterListInfo.concat(monsterList.get(count) + "\n");
+    }
+    return monsterListInfo;
+  }
+
   private Button clickDeleteM(Button myButton) {
     myButton.setOnAction(event -> {
-      int i;
-      String monsterInfo;
-      String monsterListInfo = "Monster List\n";
-      ObservableList<String> monsterList;
-      if (currentSpace.contains("Chamber")) {
-        monsterList = FXCollections.observableArrayList(theController.monsterListCurrent(getIndex(currentSpace)));
-      } else {
-        monsterList = FXCollections.observableArrayList(theController.monsterListCurrentPassage(getIndex(currentSpace)));
-      }
-
-      for (i = 0; i < monsterList.size(); i++) {
-        int count = i;
-        monsterListInfo = monsterListInfo.concat(monsterList.get(count) + "\n");
-      }
-      monsterListInfo = monsterListInfo.concat("Please choose one number from the list, enter it in the input box.\n");
-      output.setText(monsterListInfo);
+      output.setText(this.monsterInfo());
       input.setEditable(true);
       currentType = 2;
       currentStatus = 2;
@@ -303,51 +343,85 @@ public class GuiDemo<toReturn> extends Application implements java.io.Serializab
     return myButton;
   }
 
+  private String monsterInfo () {
+    int i;
+    String monsterInfo;
+    String monsterListInfo = "Monster List\n";
+    ObservableList<String> monsterList;
+    if (this.chamberOrPassage(currentSpace) == 1) {
+      monsterList = FXCollections.observableArrayList(theController.monsterListCurrent(getIndex(currentSpace)));
+    } else {
+      monsterList = FXCollections.observableArrayList(theController.monsterListCurrentPassage(getIndex(currentSpace)));
+    }
+
+    for (i = 0; i < monsterList.size(); i++) {
+      int count = i;
+      monsterListInfo = monsterListInfo.concat(monsterList.get(count) + "\n");
+    }
+    monsterListInfo = monsterListInfo.concat("Please choose one number from the list, enter it in the input box.\n");
+
+    return monsterListInfo;
+  }
+
   private Button confirmButton(Button myButton) {
     myButton.setOnAction(event -> {
-      if (currentSpace.contains("Chamber")) {
+      if (this.chamberOrPassage(currentSpace) == 1) {
         if (currentStatus == 1) {
-          if (currentType == 1) {
-            theController.addTreasure(getIndex(currentSpace));
-            output.setText("Successfully added a treasure to " + currentSpace);
-            ((ChamberView)room).addTreasure();
-          } else {
-            theController.addMonster(getIndex(currentSpace));
-            output.setText("Successfully added a monster to " + currentSpace);
-          }
+          this.addFinal();
         } else if (currentStatus == 2){
-          if (currentType == 1) {
-            theController.deleteTreasure(getIndex(currentSpace));
-            output.setText("Successfully removed a treasure to " + currentSpace);
-          } else {
-            theController.deleteMonster(getIndex(currentSpace));
-            output.setText("Successfully removed a monster to " + currentSpace);
-          }
+          this.deleteFinal();
         }
-
       } else {
         if (currentStatus == 1) {
-          if (currentType == 1) {
-            theController.addTreasurePassage(getIndex(currentSpace));
-            output.setText("Successfully added a treasure to " + currentSpace);
-          } else {
-            theController.addMonsterPassage(getIndex(currentSpace));
-            output.setText("Successfully added a monster to " + currentSpace);
-          }
+          this.addPassageFinal();
         } else if (currentStatus == 2){
-          if (currentType == 1) {
-            theController.deleteTreasurePassage(getIndex(currentSpace));
-            output.setText("Successfully removed a treasure to " + currentSpace);
-          } else {
-            theController.deleteMonsterPassage(getIndex(currentSpace));
-            output.setText("Successfully removed a monster to " + currentSpace);
-          }
+          this.deletePassageFinal();
         }
       }
-
     });
 
     return myButton;
+  }
+
+  private void addFinal() {
+    if (currentType == 1) {
+      theController.addTreasure(getIndex(currentSpace));
+      output.setText("Successfully added a treasure to " + currentSpace);
+      ((ChamberView)room).addTreasure();
+    } else {
+      theController.addMonster(getIndex(currentSpace));
+      output.setText("Successfully added a monster to " + currentSpace);
+    }
+  }
+
+  private void deleteFinal() {
+    if (currentType == 1) {
+      theController.deleteTreasure(getIndex(currentSpace));
+      output.setText("Successfully removed a treasure to " + currentSpace);
+    } else {
+      theController.deleteMonster(getIndex(currentSpace));
+      output.setText("Successfully removed a monster to " + currentSpace);
+    }
+  }
+
+  private void addPassageFinal() {
+    if (currentType == 1) {
+      theController.addTreasurePassage(getIndex(currentSpace));
+      output.setText("Successfully added a treasure to " + currentSpace);
+    } else {
+      theController.addMonsterPassage(getIndex(currentSpace));
+      output.setText("Successfully added a monster to " + currentSpace);
+    }
+  }
+
+  private void deletePassageFinal() {
+    if (currentType == 1) {
+      theController.deleteTreasurePassage(getIndex(currentSpace));
+      output.setText("Successfully removed a treasure to " + currentSpace);
+    } else {
+      theController.deleteMonsterPassage(getIndex(currentSpace));
+      output.setText("Successfully removed a monster to " + currentSpace);
+    }
   }
 
   private VBox setRight() {
@@ -368,26 +442,25 @@ public class GuiDemo<toReturn> extends Application implements java.io.Serializab
     ListView temp = new ListView<String>(spaces);
     temp.setPrefWidth(150);
     temp.setPrefHeight(150);
+    temp = listHandler(temp);
+
+    return temp;
+  }
+
+  private ListView listHandler(ListView temp) {
     temp.setOnMouseClicked((MouseEvent event)->{
       output.setText(this.getDescription(temp.getSelectionModel().getSelectedItem().toString()));
       currentSpace = temp.getSelectionModel().getSelectedItem().toString();
-      if (currentSpace.contains("Chamber")){
+      if (this.chamberOrPassage(currentSpace) == 1){
         if (theController.checkUnusualShape(getIndex(currentSpace)) == 1) {
-          ((ChamberView)room).adding(4,4);
-          ((ChamberView)room).addDoors(theController.getDoorSize(getIndex(currentSpace)));
+          this.unusualShape();
         } else {
-          int length = theController.getChamberLength(getIndex(currentSpace));
-          int width = theController.getChamberWidth(getIndex(currentSpace));
-          ((ChamberView)room).adding(length/5,width/5);
-          ((ChamberView)room).addDoors(theController.getDoorSize(getIndex(currentSpace)));
-          System.out.println("The scale is 1:2");
+          this.usualShape();
         }
       } else {
         int size = theController.getPassageSize(getIndex(currentSpace));
         ((ChamberView)room).addingPassage(size);
       }
-
-
 
       System.out.println("clicked on " + currentSpace);
     });
@@ -395,11 +468,25 @@ public class GuiDemo<toReturn> extends Application implements java.io.Serializab
     return temp;
   }
 
+
+  private void unusualShape() {
+    ((ChamberView)room).adding(4,4);
+    ((ChamberView)room).addDoors(theController.getDoorSize(getIndex(currentSpace)));
+  }
+
+  private void usualShape() {
+    int length = theController.getChamberLength(getIndex(currentSpace));
+    int width = theController.getChamberWidth(getIndex(currentSpace));
+    ((ChamberView)room).adding(length/5,width/5);
+    ((ChamberView)room).addDoors(theController.getDoorSize(getIndex(currentSpace)));
+    System.out.println("The scale is 1:2");
+  }
+
   private String getDescription(String info) {
     BorderPane temp = new BorderPane();
     int i;
     int num = 0;
-    if (info.contains("Chamber")) {
+    if (this.chamberOrPassage(info) == 1) {
       num = getIndex(info);
       this.setMenu(num);
       return theController.getChamberDescription(num);
@@ -407,6 +494,14 @@ public class GuiDemo<toReturn> extends Application implements java.io.Serializab
       num = getIndex(info);
       this.setMenuPassage(num);
       return theController.getPassageDescription(num);
+    }
+  }
+
+  private int chamberOrPassage(String info) {
+    if (info.contains("Chamber")) {
+      return 1;
+    } else {
+      return 0;
     }
   }
 
@@ -420,11 +515,7 @@ public class GuiDemo<toReturn> extends Application implements java.io.Serializab
     this.boxes.setItems(nameList);
 
     for (i = 0; i < boxes.getItems().size(); i++) {
-      int count = i;
-      boxes.setOnAction(event -> {
-        doorDescription.setText(theController.getDoorDescription(theController.getChamber(num),count));
-        System.out.println("clicked on Door");
-      });
+      boxes = boxHandler(num,i);
     }
   }
 
@@ -434,20 +525,30 @@ public class GuiDemo<toReturn> extends Application implements java.io.Serializab
     this.boxes.setItems(nameList);
 
     for (i = 0; i < boxes.getItems().size(); i++) {
-      int count = i;
-      //String buffer = boxes.getItems().get(i);
-      boxes.setOnAction(event -> {
-        doorDescription.setText(theController.getDoorDescriptionPassage(theController.getPassage(num),count));
-        System.out.println("clicked on Door");
-      });
+      boxes = boxPassageHandler(num,i);
     }
 
   }
 
+  private ComboBox boxHandler(int num,int count) {
+    boxes.setOnAction(event -> {
+      doorDescription.setText(theController.getDoorDescription(theController.getChamber(num),count));
+      System.out.println("clicked on Door");
+    });
 
-  /* an example of a popup area that can be set to nearly any
-  type of node
-  */
+    return boxes;
+  }
+
+  private ComboBox boxPassageHandler(int num,int count) {
+    boxes.setOnAction(event -> {
+      doorDescription.setText(theController.getDoorDescriptionPassage(theController.getPassage(num),count));
+      System.out.println("clicked on Door");
+    });
+
+    return boxes;
+  }
+
+
   private Popup createPopUp(int x, int y, String text) {
     Popup popup = new Popup();
     popup.setX(x);
@@ -460,14 +561,11 @@ public class GuiDemo<toReturn> extends Application implements java.io.Serializab
     return popup;
   }
 
-  /*generic button creation method ensure that all buttons will have a
-  similar style and means that the style only need to be in one place
-  */
   private Button createButton(String text) {
-    Button btn = new Button();
-    btn.setText(text);
-    btn.setStyle("");
-    return btn;
+    Button button = new Button();
+    button.setText(text);
+    button.setStyle("");
+    return button;
   }
 
   private void changeDescriptionText(String text) {
