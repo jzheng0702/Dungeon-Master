@@ -55,6 +55,7 @@ public class Gui<toReturn> extends Application implements java.io.Serializable{
     root = setUpRoot();
     descriptionPane = createPopUp(200, 300, "Example Description of something");
     Scene scene = new Scene(root, 1000, 1000);
+    scene.getStylesheets().add(getClass().getResource("/res/stylesheet.css").toExternalForm());
     primaryStage.setTitle("Dungeon");
     primaryStage.setScene(scene);
     primaryStage.show();
@@ -68,6 +69,7 @@ public class Gui<toReturn> extends Application implements java.io.Serializable{
     root = setUpRoot();
     descriptionPane = createPopUp(200, 300, "Example Description of something");
     Scene scene = new Scene(root, 700, 700);
+    scene.getStylesheets().add(getClass().getResource("/res/stylesheet.css").toExternalForm());
     primaryStage.setTitle("Dungeon");
     primaryStage.setScene(scene);
     primaryStage.show();
@@ -125,6 +127,7 @@ public class Gui<toReturn> extends Application implements java.io.Serializable{
     loadFile = loadFileHandler(loadFile);
 
     MenuButton file = new MenuButton("File", null, saveFile,loadFile);
+    myToolBar.getStyleClass().add("header");
 
     myToolBar.getItems().add(file);
     return myToolBar;
@@ -170,6 +173,7 @@ public class Gui<toReturn> extends Application implements java.io.Serializable{
 
     VBox layout = new VBox(10);
     layout.getChildren().addAll(room,output,input,submit,output2,confirm);
+    layout.getStyleClass().add("layout");
     return layout;
   }
 
@@ -432,8 +436,8 @@ public class Gui<toReturn> extends Application implements java.io.Serializable{
     doorDescription.setEditable(false);
 
     VBox layout = new VBox(10);
-    //layout.setStyle("-fx-background-color: white; -fx-padding: 10;");
     layout.getChildren().addAll(boxes,doorDescription);
+    layout.getStyleClass().add("right-section");
 
     return layout;
   }
@@ -443,6 +447,7 @@ public class Gui<toReturn> extends Application implements java.io.Serializable{
     temp.setPrefWidth(150);
     temp.setPrefHeight(150);
     temp = listHandler(temp);
+    temp.getStyleClass().add("list-section");
 
     return temp;
   }

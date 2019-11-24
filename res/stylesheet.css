@@ -1,6 +1,30 @@
 .button{
-    -fx-text-fill: rgb(49, 89, 23);
-    -fx-border-color: red;
-    -fx-border-radius: 15;
-    -fx-padding: 3 6 6 6;
+  -fx-font-size: 15px;
+  -fx-font-family: "calibri", Garamond, 'Comic Sans MS';
+  -fx-padding: 10 15 10 15;
+}
+
+.header {
+    -fx-padding: 10px;
+    -fx-font-size: 15px;
+}
+
+.layout {
+    -fx-padding: 10px;
+    -fx-font-size: 15px;
+    -fx-background-color: #ffe6ff;
+}
+
+.list-section {
+    -fx-min-width: 200px;
+    -fx-pref-width: 200px;
+    -fx-max-width: 200px;
+    -fx-background-color: #ffe6ff;
+}
+
+.right-section {
+    -fx-min-width: 200px;
+    -fx-pref-width: 200px;
+    -fx-max-width: 200px;
+    -fx-background-color: #ffe6ff;
 }
