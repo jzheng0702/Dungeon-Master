@@ -81,6 +81,17 @@ public class PassageSection {
   }
 
   /**
+  * return treasure.
+  * @return treasure if there is one
+  */
+  public Treasure getTreasure() {
+    if (myTreasure != null) {
+      return myTreasure;
+    }
+    return null;
+  }
+
+  /**
   * add a new monster.
   * @param theMonster the new monster
   */

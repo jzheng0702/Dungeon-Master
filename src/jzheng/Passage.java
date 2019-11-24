@@ -28,11 +28,6 @@ public class Passage extends Space {
   private ArrayList<Door> myDoors = new ArrayList<Door>(1);
 
   /**
-  * my arraylist instance variable, record all the monsters.
-  */
-  private ArrayList<Monster> myMonsters = new ArrayList<Monster>(1);
-
-  /**
   * number of monsters
   */
   private int numOfMonster;
@@ -90,13 +85,29 @@ public class Passage extends Space {
 
   }
 
+
   /**
   * remove a monster in section 'i' of the passage.
   * @param i the index
   */
   public void deleteMonster(int i) {
-    thePassageSections.get(i).removeMonster();
-    numOfMonster--;
+    int count = 0;
+    int j;
+
+    for (j = 0; j < thePassageSections.size(); j++) {
+      if (thePassageSections.get(j).getMonster() == null) {
+        count++;
+      } else {
+        break;
+      }
+    }
+    if (thePassageSections.get(i).getMonster() == null) {
+      thePassageSections.get(count).removeMonster();
+    } else {
+      thePassageSections.get(i).removeMonster();
+    }
+
+    numOfTreasure--;
   }
 
   /**
@@ -115,7 +126,22 @@ public class Passage extends Space {
   * @param i the index
   */
   public void deleteTreasure(int i) {
-    thePassageSections.get(i).removeTreasure();
+    int count = 0;
+    int j;
+
+    for (j = 0; j < thePassageSections.size(); j++) {
+      if (thePassageSections.get(j).getTreasure() == null) {
+        count++;
+      } else {
+        break;
+      }
+    }
+    if (thePassageSections.get(i).getTreasure() == null) {
+      thePassageSections.get(count).removeTreasure();
+    } else {
+      thePassageSections.get(i).removeTreasure();
+    }
+
     numOfTreasure--;
   }
 
@@ -146,6 +172,38 @@ public class Passage extends Space {
   */
   public int getTreasureSize() {
     return numOfTreasure;
+  }
+
+  /**
+  * returns treasure array list
+  * @return treasure array
+  */
+  public ArrayList getTreasures() {
+    int i;
+    ArrayList<Treasure> myTreasures = new ArrayList<Treasure>(1);
+
+    for (i = 0; i < thePassageSections.size(); i++) {
+      if (thePassageSections.get(i).getTreasure() != null) {
+        myTreasures.add(thePassageSections.get(i).getTreasure());
+      }
+    }
+    return myTreasures;
+  }
+
+  /**
+  * returns monster array list
+  * @return monster array
+  */
+  public ArrayList getMonsters() {
+    int i;
+    ArrayList<Monster> myMonsters = new ArrayList<Monster>(1);
+
+    for (i = 0; i < thePassageSections.size(); i++) {
+      if (thePassageSections.get(i).getMonster() != null) {
+        myMonsters.add(thePassageSections.get(i).getMonster());
+      }
+    }
+    return myMonsters;
   }
 
 

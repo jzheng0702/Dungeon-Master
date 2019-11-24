@@ -37,6 +37,7 @@ public class GuiDemo<toReturn> extends Application {
   private ComboBox<String> boxes = new ComboBox<String>();
   private int userChoice;
   private int currentType;
+  private int currentStatus;
 
   /*a call to start replaces a call to the constructor for a JavaFX GUI*/
   @Override
@@ -123,13 +124,33 @@ public class GuiDemo<toReturn> extends Application {
       if (input.getText() != null) {
         choice = input.getText();
         userChoice = Integer.parseInt(String.valueOf(choice));
-        if (currentType == 1) {
-          treasureInfo = theController.addTempTreasure(getIndex(currentSpace),userChoice);
-          output2.setText("You have choose treasure " + userChoice + " It is: " + treasureInfo + ", please hit confirm button to save changes");
+        System.out.println(userChoice);
+        if (currentStatus == 1) {
+          if (currentType == 1) {
+            treasureInfo = theController.addTempTreasure(userChoice);
+            output2.setText("You have choose treasure " + userChoice + " It is: " + treasureInfo + ", please hit confirm button to save changes");
+          } else {
+            monsterInfo = theController.addTempMonster(userChoice);
+            output2.setText("You have choose monster " + userChoice + " It is: " + monsterInfo + ", please hit confirm button to save changes");
+          }
         } else {
-          monsterInfo = theController.addTempMonster(getIndex(currentSpace),userChoice);
-          output2.setText("You have choose monster " + userChoice + " It is: " + monsterInfo + ", please hit confirm button to save changes");
+          if (currentType == 1) {
+            if (currentSpace.contains("Chamber")) {
+              treasureInfo = theController.deleteTempTreasure(getIndex(currentSpace),userChoice);
+            } else {
+              treasureInfo = theController.deleteTempTreasurePassage(getIndex(currentSpace),userChoice);
+            }
+            output2.setText("You have choose treasure " + userChoice + " It is: " + treasureInfo + ", please hit confirm button to save changes");
+          } else {
+            if (currentSpace.contains("Chamber")) {
+              monsterInfo = theController.deleteTempMonster(getIndex(currentSpace),userChoice);
+            } else {
+              monsterInfo = theController.deleteTempMonsterPassage(getIndex(currentSpace),userChoice);
+            }
+            output2.setText("You have choose monster " + userChoice + " It is: " + monsterInfo + ", please hit confirm button to save changes");
+          }
         }
+
       } else {
         System.out.println("Nothing in here");
       }
@@ -154,6 +175,7 @@ public class GuiDemo<toReturn> extends Application {
       output.setText(treasureListInfo);
       input.setEditable(true);
       currentType = 1;
+      currentStatus = 1;
 
 
     });
@@ -162,6 +184,27 @@ public class GuiDemo<toReturn> extends Application {
   }
 
   private Button clickDeleteT(Button myButton) {
+    myButton.setOnAction(event -> {
+      int i;
+      String treasureInfo;
+      String treasureListInfo = "Treasure List\n";
+      ObservableList<String> treasureList;
+      if (currentSpace.contains("Chamber")) {
+        treasureList = FXCollections.observableArrayList(theController.treasureListCurrent(getIndex(currentSpace)));
+      } else {
+        treasureList = FXCollections.observableArrayList(theController.treasureListCurrentPassage(getIndex(currentSpace)));
+      }
+
+      for (i = 0; i < treasureList.size(); i++) {
+        int count = i;
+        treasureListInfo = treasureListInfo.concat(treasureList.get(count) + "\n");
+      }
+      treasureListInfo = treasureListInfo.concat("Please choose one number from the list, enter it in the input box.\n");
+      output.setText(treasureListInfo);
+      input.setEditable(true);
+      currentType = 1;
+      currentStatus = 2;
+    });
     return myButton;
   }
 
@@ -180,26 +223,32 @@ public class GuiDemo<toReturn> extends Application {
       output.setText(monsterListInfo);
       input.setEditable(true);
       currentType = 2;
+      currentStatus = 1;
     });
     return myButton;
   }
 
   private Button clickDeleteM(Button myButton) {
-    String result;
     myButton.setOnAction(event -> {
+      int i;
+      String monsterInfo;
+      String monsterListInfo = "Monster List\n";
+      ObservableList<String> monsterList;
       if (currentSpace.contains("Chamber")) {
-        if (theController.DeleteMonster(getIndex(currentSpace)) == "No Monster") {
-          output.setText("There is no monster in " + currentSpace);
-        } else {
-          output.setText("Successfully removed Monster in " + currentSpace);
-        }
+        monsterList = FXCollections.observableArrayList(theController.monsterListCurrent(getIndex(currentSpace)));
       } else {
-        if (theController.DeleteMonsterPassage(getIndex(currentSpace)) == "No Monster") {
-          output.setText("There is no monster in " + currentSpace);
-        } else {
-          output.setText("Successfully removed Monster in " + currentSpace);
-        }
+        monsterList = FXCollections.observableArrayList(theController.monsterListCurrentPassage(getIndex(currentSpace)));
       }
+
+      for (i = 0; i < monsterList.size(); i++) {
+        int count = i;
+        monsterListInfo = monsterListInfo.concat(monsterList.get(count) + "\n");
+      }
+      monsterListInfo = monsterListInfo.concat("Please choose one number from the list, enter it in the input box.\n");
+      output.setText(monsterListInfo);
+      input.setEditable(true);
+      currentType = 2;
+      currentStatus = 2;
     });
     return myButton;
   }
@@ -207,20 +256,41 @@ public class GuiDemo<toReturn> extends Application {
   private Button confirmButton(Button myButton) {
     myButton.setOnAction(event -> {
       if (currentSpace.contains("Chamber")) {
-        if (currentType == 1) {
-          theController.addTreasure(getIndex(currentSpace));
-          output.setText("Successfully added a treasure to " + currentSpace);
+        if (currentStatus == 1) {
+          if (currentType == 1) {
+            theController.addTreasure(getIndex(currentSpace));
+            output.setText("Successfully added a treasure to " + currentSpace);
+          } else {
+            theController.addMonster(getIndex(currentSpace));
+            output.setText("Successfully added a monster to " + currentSpace);
+          }
         } else {
-          theController.addMonster(getIndex(currentSpace));
-          output.setText("Successfully added a monster to " + currentSpace);
+          if (currentType == 1) {
+            theController.deleteTreasure(getIndex(currentSpace));
+            output.setText("Successfully removed a treasure to " + currentSpace);
+          } else {
+            theController.deleteMonster(getIndex(currentSpace));
+            output.setText("Successfully removed a monster to " + currentSpace);
+          }
         }
+
       } else {
-        if (currentType == 1) {
-          theController.addTreasurePassage(getIndex(currentSpace));
-          output.setText("Successfully added a treasure to " + currentSpace);
+        if (currentStatus == 1) {
+          if (currentType == 1) {
+            theController.addTreasurePassage(getIndex(currentSpace));
+            output.setText("Successfully added a treasure to " + currentSpace);
+          } else {
+            theController.addMonsterPassage(getIndex(currentSpace));
+            output.setText("Successfully added a monster to " + currentSpace);
+          }
         } else {
-          theController.addMonsterPassage(getIndex(currentSpace));
-          output.setText("Successfully added a monster to " + currentSpace);
+          if (currentType == 1) {
+            theController.deleteTreasurePassage(getIndex(currentSpace));
+            output.setText("Successfully removed a treasure to " + currentSpace);
+          } else {
+            theController.deleteMonsterPassage(getIndex(currentSpace));
+            output.setText("Successfully removed a monster to " + currentSpace);
+          }
         }
       }
 

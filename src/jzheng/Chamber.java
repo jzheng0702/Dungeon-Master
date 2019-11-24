@@ -105,8 +105,8 @@ public class Chamber extends Space {
   /**
   * delete a monster to the current LIST.
   */
-  public void deleteMonster() {
-    myMonsters.remove(this.getMonsters().size() - 1);
+  public void deleteMonster(int num) {
+    myMonsters.remove(num);
   }
 
   /**
@@ -125,6 +125,13 @@ public class Chamber extends Space {
   public void addTreasure(Treasure theTreasure) {
     myTreasures.add(theTreasure);
 
+  }
+
+  /**
+  * delete a treasure to the current LIST.
+  */
+  public void deleteTreasure(int num) {
+    myTreasures.remove(num);
   }
 
   /**

@@ -9,14 +9,14 @@ import jzheng.PassageSection;
 import java.util.ArrayList;
 import dnd.models.Monster;
 import dnd.models.Treasure;
-import dnd.die.D20;
-import dnd.die.Percentile;
 
 public class Controller {
   private GuiDemo myGui;
   private Level myLevel;
   private Treasure tempTreasure;
   private Monster tempMonster;
+  private int monsterLocation;
+  private int treasureLocation;
 
   public Controller(GuiDemo theGui){
     myGui = theGui;
@@ -56,16 +56,42 @@ public class Controller {
     return myPassage.getDoor(index).getDescription();
   }
 
-  public String addTempTreasure(int num,int treasureNum) {
+  public String addTempTreasure(int treasureNum) {
     tempTreasure = new Treasure();
     tempTreasure.chooseTreasure(treasureNum);
     return tempTreasure.getDescription();
   }
 
-  public String addTempMonster(int num,int monsterNum) {
+  public String addTempMonster(int monsterNum) {
     tempMonster = new Monster();
     tempMonster.setType(monsterNum);
     return tempMonster.getDescription();
+  }
+
+  public String deleteTempTreasure(int num,int treasureNum) {
+    this.treasureLocation = treasureNum;
+    Chamber myChamber = this.getChamber(num);
+    return myChamber.getTreasureList().get(treasureNum - 1).getDescription();
+  }
+
+  public String deleteTempTreasurePassage(int num,int treasureNum) {
+    this.treasureLocation = treasureNum;
+    Passage myPassage = this.getPassage(num);
+    Treasure temp = (Treasure)myPassage.getTreasures().get(treasureNum - 1);
+    return temp.getDescription();
+  }
+
+  public String deleteTempMonster(int num,int monsterNum) {
+    this.monsterLocation = monsterNum;
+    Chamber myChamber = this.getChamber(num);
+    return myChamber.getMonsters().get(monsterNum - 1).getDescription();
+  }
+
+  public String deleteTempMonsterPassage(int num,int monsterNum) {
+    this.monsterLocation = monsterNum;
+    Passage myPassage = this.getPassage(num);
+    Monster temp = (Monster)myPassage.getMonsters().get(monsterNum - 1);
+    return temp.getDescription();
   }
 
   public ArrayList treasureList() {
@@ -92,6 +118,56 @@ public class Controller {
     return treasureList;
   }
 
+  public ArrayList treasureListCurrent(int num) {
+    ArrayList<String> treasureList = new ArrayList<>();
+    Chamber myChamber = this.getChamber(num);
+    int i;
+
+    for (i = 0; i < myChamber.getTreasureList().size(); i++) {
+      treasureList.add("Treasure " + (i + 1) + ": " + myChamber.getTreasureList().get(i).getDescription());
+    }
+
+    return treasureList;
+  }
+
+  public ArrayList treasureListCurrentPassage(int num) {
+    ArrayList<String> treasureList = new ArrayList<>();
+    Passage myPassage = this.getPassage(num);
+    int i;
+
+    for (i = 0; i < myPassage.getTreasures().size(); i++) {
+      Treasure temp = (Treasure)myPassage.getTreasures().get(i);
+      treasureList.add("Treasure " + (i + 1) + ": " + temp.getDescription());
+    }
+
+    return treasureList;
+  }
+
+  public ArrayList monsterListCurrent(int num) {
+    ArrayList<String> monsterList = new ArrayList<>();
+    Chamber myChamber = this.getChamber(num);
+    int i;
+
+    for (i = 0; i < myChamber.getMonsters().size(); i++) {
+      monsterList.add("Monster " + (i + 1) + ": " + myChamber.getMonsters().get(i).getDescription());
+    }
+
+    return monsterList;
+  }
+
+  public ArrayList monsterListCurrentPassage(int num) {
+    ArrayList<String> monsterList = new ArrayList<>();
+    Passage myPassage = this.getPassage(num);
+    int i;
+
+    for (i = 0; i < myPassage.getMonsters().size(); i++) {
+      Monster temp = (Monster)myPassage.getMonsters().get(i);
+      monsterList.add("Monster " + (i + 1) + ": " + temp.getDescription());
+    }
+
+    return monsterList;
+  }
+
   public ArrayList monsterList() {
     ArrayList<String> monsterList = new ArrayList<>();
     int i;
@@ -99,9 +175,9 @@ public class Controller {
     Monster temp = new Monster();
     Monster after = new Monster();
 
-    for (i = 1; i <= 20; i++) {
+    for (i = 1; i <= 100; i++) {
       temp.setType(i);
-      if (i != 20) {
+      if (i != 100) {
         after.setType(i + 1);
         if (!(temp.getDescription().equals(after.getDescription()))) {
           end = i;
@@ -113,7 +189,7 @@ public class Controller {
           start = i + 1;
         }
       } else {
-        monsterList.add("20: " + temp.getDescription());
+        monsterList.add("99-100: " + temp.getDescription());
       }
     }
 
@@ -140,6 +216,14 @@ public class Controller {
     }
   }
 
+  public void deleteTreasure(int num) {
+    this.getChamber(num).deleteTreasure(treasureLocation - 1);
+  }
+
+  public void deleteTreasurePassage(int num) {
+    this.getPassage(num).deleteTreasure(treasureLocation - 1);
+  }
+
   public void addMonster(int num) {
     this.getChamber(num).addMonster(tempMonster);
   }
@@ -160,27 +244,13 @@ public class Controller {
     }
   }
 
-  public String DeleteMonster(int num) {
-    if (this.getChamber(num).getMonsters().size() == 0) {
-      return "No Monster";
-    } else {
-      this.getChamber(num).deleteMonster();
-      return "Delete";
-    }
 
+  public void deleteMonster(int num) {
+    this.getChamber(num).deleteMonster(monsterLocation - 1);
   }
 
-  public String DeleteMonsterPassage(int num) {
-    int size = this.getPassage(num).getMonsterSize();
-    if (size == 0) {
-      return "No Monster";
-    } else if (size == 1){
-      this.getPassage(num).deleteMonster(0);
-      return "Delete";
-    } else {
-      this.getPassage(num).deleteMonster(1);
-      return "Delete";
-    }
+  public void deleteMonsterPassage(int num) {
+    this.getPassage(num).deleteMonster(monsterLocation - 1);
   }
 
 
