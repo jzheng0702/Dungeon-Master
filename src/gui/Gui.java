@@ -246,7 +246,7 @@ public class Gui<toReturn> extends Application implements java.io.Serializable {
   */
   private MenuItem loadFileHandler(MenuItem loadFile) {
     loadFile.setOnAction(event -> {
-      output.setText("Load File!Please enter the full path of the file(includeing the name of the file) in the input box! Click submit when you're done\nExample: /file/a4/fileName");
+      output.setText("Load File!\nPlease enter the full path of the file(includeing the name of the file) in the input box! Click submit when you're done\nExample: /file/a4/fileName");
       input.setEditable(true);
       currentStatus = 4;
     });
