@@ -124,7 +124,7 @@ public class Gui<toReturn> extends Application implements java.io.Serializable {
     /*Border Panes have  top, left, right, center and bottom sections */
     root = setUpRoot();
     descriptionPane = createPopUp(200, 300, "Example Description of something");
-    Scene scene = new Scene(root, 700, 700);
+    Scene scene = new Scene(root, 1000, 1000);
     scene.getStylesheets().add(getClass().getResource("/res/stylesheet.css").toExternalForm());
     primaryStage.setTitle("Dungeon");
     primaryStage.setScene(scene);
@@ -573,10 +573,10 @@ public class Gui<toReturn> extends Application implements java.io.Serializable {
   private void addFinal() {
     if (currentType == 1) {
       theController.addTreasure(getIndex(currentSpace));
-      output.setText("Successfully added a treasure to " + currentSpace+ "\n Please click the label again to see the changes");
+      output.setText("Successfully added a treasure to " + currentSpace + "\n Please click the label again to see the changes");
     } else {
       theController.addMonster(getIndex(currentSpace));
-      output.setText("Successfully added a monster to " + currentSpace+ "\n Please click the label again to see the changes");
+      output.setText("Successfully added a monster to " + currentSpace + "\n Please click the label again to see the changes");
     }
   }
 
@@ -586,7 +586,7 @@ public class Gui<toReturn> extends Application implements java.io.Serializable {
   private void deleteFinal() {
     if (currentType == 1) {
       theController.deleteTreasure(getIndex(currentSpace));
-      output.setText("Successfully removed a treasure to " + currentSpace+ "\n Please click the label again to see the changes");
+      output.setText("Successfully removed a treasure to " + currentSpace + "\n Please click the label again to see the changes");
     } else {
       theController.deleteMonster(getIndex(currentSpace));
       output.setText("Successfully removed a monster to " + currentSpace + "\n Please click the label again to see the changes");
@@ -599,10 +599,10 @@ public class Gui<toReturn> extends Application implements java.io.Serializable {
   private void addPassageFinal() {
     if (currentType == 1) {
       theController.addTreasurePassage(getIndex(currentSpace));
-      output.setText("Successfully added a treasure to " + currentSpace+ "\n Please click the label again to see the changes");
+      output.setText("Successfully added a treasure to " + currentSpace + "\n Please click the label again to see the changes");
     } else {
       theController.addMonsterPassage(getIndex(currentSpace));
-      output.setText("Successfully added a monster to " + currentSpace+ "\n Please click the label again to see the changes");
+      output.setText("Successfully added a monster to " + currentSpace + "\n Please click the label again to see the changes");
     }
   }
 
@@ -672,8 +672,8 @@ public class Gui<toReturn> extends Application implements java.io.Serializable {
       } else {
         int size = theController.getPassageSize(getIndex(currentSpace));
         ((ChamberView) room).addingPassage(size);
-        ((ChamberView) room).addTreasure(theController.getTreasurePassageSize(getIndex(currentSpace)));
-        ((ChamberView) room).addMonster(theController.getMonsterSize(getIndex(currentSpace)));
+        ((ChamberView) room).addTreasure(size, theController.getTreasurePassageSize(getIndex(currentSpace)));
+        ((ChamberView) room).addMonster(size, theController.getMonsterPassageSize(getIndex(currentSpace)));
       }
 
       System.out.println("clicked on " + currentSpace);

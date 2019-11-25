@@ -111,15 +111,33 @@ public class ChamberView extends GridPane implements java.io.Serializable {
     int i;
     int j;
     int count = 0;
+    int index = 0;
     int size = length * width;
+
+    if (num == 0) {
+      return;
+    }
+
     for (i = 0; i < length; i++) {
       for (j = 0; j < length; j++) {
         if (count == num) {
           break;
         } else {
-          add(floorFactory(treasure), i, j, 1, 1);
+          if (((Label) tiles[index]).getLabelFor() == null) {
+            tiles[index] = imgFactory(treasure);
+            add(tiles[index], i, j, 1, 1);
+            count++;
+            index++;
+          } else {
+            index++;
+
+          }
+          if (index == size) {
+            count = num;
+            break;
+          }
         }
-        count++;
+
       }
     }
 
@@ -133,15 +151,105 @@ public class ChamberView extends GridPane implements java.io.Serializable {
     int i;
     int j;
     int count = 0;
+    int index = 0;
     int size = length * width;
+
+    if (num == 0) {
+      return;
+    }
     for (i = 0; i < length; i++) {
       for (j = 0; j < length; j++) {
         if (count == num) {
           break;
         } else {
-          add(floorFactory(monster), i, j, 1, 1);
+          if (((Label) tiles[index]).getLabelFor() == null) {
+            tiles[index] = imgFactory(monster);
+            add(tiles[index], i, j, 1, 1);
+            count++;
+            index++;
+          } else {
+            index++;
+          }
+          if (index == size) {
+            count = num;
+            break;
+          }
         }
-        count++;
+
+      }
+    }
+  }
+
+  /**
+  * when adding a new treasure.
+  * @param num my number
+  * @param size mySize
+  */
+  public void addTreasure(int size, int num) {
+    int i;
+    int j;
+    int count = 0;
+    int index = 0;
+
+    if (num == 0) {
+      return;
+    }
+
+    for (i = 0; i < size; i++) {
+      if (count == num) {
+        break;
+      } else {
+        if (((Label) tiles[index]).getLabelFor() == null) {
+          tiles[index] = imgFactory(treasure);
+          add(tiles[index], 0, i, 1, 1);
+          count++;
+          index++;
+        } else {
+          index++;
+        }
+        if (index == size) {
+          i = size;
+          count = num;
+          break;
+        }
+      }
+    }
+
+  }
+
+  /**
+  * when adding a new monster.
+  * @param num my number
+  * @param size my size
+  */
+  public void addMonster(int size, int num) {
+    int i;
+    int j;
+    int count = 0;
+    int index = 0;
+
+    if (num == 0) {
+      System.out.println("Here");
+      return;
+    }
+
+    for (i = 0; i < size; i++) {
+      if (count == num) {
+        break;
+      } else {
+        if (((Label) tiles[index]).getLabelFor() == null) {
+          tiles[index] = imgFactory(monster);
+          add(tiles[index], 0, i, 1, 1);
+          count++;
+          index++;
+        } else {
+          index++;
+        }
+        if (index == size) {
+          i = size;
+          count = num;
+          break;
+        }
       }
     }
   }
@@ -154,15 +262,29 @@ public class ChamberView extends GridPane implements java.io.Serializable {
     int i;
     int j;
     int count = 0;
+    int index = 0;
     int size = length * width;
+
+
     for (i = 0; i < length; i++) {
       for (j = 0; j < length; j++) {
         if (count == num) {
           break;
         } else {
-          add(floorFactory(openDoor), i, j, 1, 1);
+          if (((Label) tiles[index]).getLabelFor() == null) {
+            tiles[index] = imgFactory(openDoor);
+            add(tiles[index], i, j, 1, 1);
+            count++;
+            index++;
+          } else {
+            index++;
+          }
+          if (index == size) {
+            count = num;
+            break;
+          }
         }
-        count++;
+
       }
     }
 
@@ -221,7 +343,7 @@ public class ChamberView extends GridPane implements java.io.Serializable {
 
     Node[] toReturn = new Node[size];
     for (i = 0; i < size; i++) {
-      toReturn[i] = floorFactory(floor);
+      toReturn[i] = imgFactory(floor);
     }
     return toReturn;
   }
@@ -232,13 +354,19 @@ public class ChamberView extends GridPane implements java.io.Serializable {
   * @param img the image
   * @return the node
   */
-  public Node floorFactory(String img) {
-    Image floorImg = new Image(getClass().getResourceAsStream(img));
+  public Node imgFactory(String img) {
+    Image imgTemp = new Image(getClass().getResourceAsStream(img));
     Label toReturn = new Label();
-    ImageView imageView = new ImageView(floorImg);
+    if (!(img.contains("floor"))) {
+      Label newLabel = new Label();
+      toReturn.setLabelFor(newLabel);
+    }
+
+    ImageView imageView = new ImageView(imgTemp);
     imageView.setFitWidth(50);
     imageView.setFitHeight(50);
     toReturn.setGraphic(imageView);
+
     return toReturn;
   }
 
