@@ -108,6 +108,42 @@ public class Controller implements java.io.Serializable {
   }
 
   /**
+  * all the treasures.
+  * @param index the chamber's index
+  * @return the door size
+  */
+  public int getTreasureSize(int index) {
+    return this.getChamber(index).getTreasureList().size();
+  }
+
+  /**
+  * all the treasures.
+  * @param index the passage's index
+  * @return the door size
+  */
+  public int getTreasurePassageSize(int index) {
+    return this.getPassage(index).getTreasures().size();
+  }
+
+  /**
+  * all the monsters.
+  * @param index the chamber's index
+  * @return the door size
+  */
+  public int getMonsterSize(int index) {
+    return this.getChamber(index).getMonsters().size();
+  }
+
+  /**
+  * all the monsters.
+  * @param index the passage's index
+  * @return the door size
+  */
+  public int getMonsterPassageSize(int index) {
+    return this.getPassage(index).getMonsters().size();
+  }
+
+  /**
   * all the passages.
   * @param index the passage's index
   * @return the passage size

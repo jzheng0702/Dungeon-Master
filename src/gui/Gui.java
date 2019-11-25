@@ -573,11 +573,10 @@ public class Gui<toReturn> extends Application implements java.io.Serializable {
   private void addFinal() {
     if (currentType == 1) {
       theController.addTreasure(getIndex(currentSpace));
-      output.setText("Successfully added a treasure to " + currentSpace);
-      ((ChamberView) room).addTreasure();
+      output.setText("Successfully added a treasure to " + currentSpace+ "\n Please click the label again to see the changes");
     } else {
       theController.addMonster(getIndex(currentSpace));
-      output.setText("Successfully added a monster to " + currentSpace);
+      output.setText("Successfully added a monster to " + currentSpace+ "\n Please click the label again to see the changes");
     }
   }
 
@@ -587,10 +586,10 @@ public class Gui<toReturn> extends Application implements java.io.Serializable {
   private void deleteFinal() {
     if (currentType == 1) {
       theController.deleteTreasure(getIndex(currentSpace));
-      output.setText("Successfully removed a treasure to " + currentSpace);
+      output.setText("Successfully removed a treasure to " + currentSpace+ "\n Please click the label again to see the changes");
     } else {
       theController.deleteMonster(getIndex(currentSpace));
-      output.setText("Successfully removed a monster to " + currentSpace);
+      output.setText("Successfully removed a monster to " + currentSpace + "\n Please click the label again to see the changes");
     }
   }
 
@@ -600,10 +599,10 @@ public class Gui<toReturn> extends Application implements java.io.Serializable {
   private void addPassageFinal() {
     if (currentType == 1) {
       theController.addTreasurePassage(getIndex(currentSpace));
-      output.setText("Successfully added a treasure to " + currentSpace);
+      output.setText("Successfully added a treasure to " + currentSpace+ "\n Please click the label again to see the changes");
     } else {
       theController.addMonsterPassage(getIndex(currentSpace));
-      output.setText("Successfully added a monster to " + currentSpace);
+      output.setText("Successfully added a monster to " + currentSpace+ "\n Please click the label again to see the changes");
     }
   }
 
@@ -673,6 +672,8 @@ public class Gui<toReturn> extends Application implements java.io.Serializable {
       } else {
         int size = theController.getPassageSize(getIndex(currentSpace));
         ((ChamberView) room).addingPassage(size);
+        ((ChamberView) room).addTreasure(theController.getTreasurePassageSize(getIndex(currentSpace)));
+        ((ChamberView) room).addMonster(theController.getMonsterSize(getIndex(currentSpace)));
       }
 
       System.out.println("clicked on " + currentSpace);
@@ -687,6 +688,8 @@ public class Gui<toReturn> extends Application implements java.io.Serializable {
   private void unusualShape() {
     ((ChamberView) room).adding(4, 4);
     ((ChamberView) room).addDoors(theController.getDoorSize(getIndex(currentSpace)));
+    ((ChamberView) room).addTreasure(theController.getTreasureSize(getIndex(currentSpace)));
+    ((ChamberView) room).addMonster(theController.getMonsterSize(getIndex(currentSpace)));
   }
 
 
@@ -698,6 +701,8 @@ public class Gui<toReturn> extends Application implements java.io.Serializable {
     int width = theController.getChamberWidth(getIndex(currentSpace));
     ((ChamberView) room).adding(length / 5, width / 5);
     ((ChamberView) room).addDoors(theController.getDoorSize(getIndex(currentSpace)));
+    ((ChamberView) room).addTreasure(theController.getTreasureSize(getIndex(currentSpace)));
+    ((ChamberView) room).addMonster(theController.getMonsterSize(getIndex(currentSpace)));
     System.out.println("The ratio is 1:2");
   }
 

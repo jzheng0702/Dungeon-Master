@@ -105,26 +105,45 @@ public class ChamberView extends GridPane implements java.io.Serializable {
 
   /**
   * when adding a new treasure.
+  * @param num my number
   */
-  public void addTreasure() {
+  public void addTreasure(int num) {
     int i;
     int j;
     int count = 0;
     int size = length * width;
-    tiles[3] = this.floorFactory(treasure);
-    add(tiles[3], 0, 1, 1, 1);
+    for (i = 0; i < length; i++) {
+      for (j = 0; j < length; j++) {
+        if (count == num) {
+          break;
+        } else {
+          add(floorFactory(treasure), i, j, 1, 1);
+        }
+        count++;
+      }
+    }
 
   }
 
   /**
   * when adding a new monster.
+  * @param num my number
   */
-  public void addMonster() {
+  public void addMonster(int num) {
     int i;
     int j;
     int count = 0;
     int size = length * width;
-    add(floorFactory(monster), 0, 2, 1, 1);
+    for (i = 0; i < length; i++) {
+      for (j = 0; j < length; j++) {
+        if (count == num) {
+          break;
+        } else {
+          add(floorFactory(monster), i, j, 1, 1);
+        }
+        count++;
+      }
+    }
   }
 
   /**
