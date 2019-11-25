@@ -2,7 +2,6 @@ package jzheng;
 import dnd.models.Exit;
 import dnd.models.Trap;
 import java.util.ArrayList;
-import dnd.die.D20;
 
 
 /**
@@ -10,7 +9,7 @@ import dnd.die.D20;
 * @version    1.3
 */
 
-public class Door implements java.io.Serializable{
+public class Door implements java.io.Serializable {
 
   /**
   * my exit LIST.

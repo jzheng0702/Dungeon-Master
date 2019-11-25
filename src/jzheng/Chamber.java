@@ -14,7 +14,7 @@ import java.util.ArrayList;
 * @version    1.3
 */
 
-public class Chamber extends Space implements java.io.Serializable{
+public class Chamber extends Space implements java.io.Serializable {
 
   /**
   * determine the contents of the chamber.
@@ -105,6 +105,7 @@ public class Chamber extends Space implements java.io.Serializable{
 
   /**
   * delete a monster to the current LIST.
+  * @param num the num
   */
   public void deleteMonster(int num) {
     myMonsters.remove(num);
@@ -130,6 +131,7 @@ public class Chamber extends Space implements java.io.Serializable{
 
   /**
   * delete a treasure to the current LIST.
+  * @param num the num
   */
   public void deleteTreasure(int num) {
     myTreasures.remove(num);
@@ -164,7 +166,7 @@ public class Chamber extends Space implements java.io.Serializable{
     String temp = "The chamber's shape is " + this.getChamberShape().getShape() + ". The chamber content is " + myContents.getDescription() + ". \n";
     try {
       temp = temp.concat("The chamber's size is " + this.getChamberShape().getLength() + " * " + this.getChamberShape().getWidth() + "\n");
-    } catch(UnusualShapeException e){
+    } catch (UnusualShapeException e) {
       area = this.getChamberShape().getArea();
       temp = temp.concat("The chamber is an unusual shape, the area is " + area);
     }
@@ -174,8 +176,9 @@ public class Chamber extends Space implements java.io.Serializable{
       for (i = 0; i < myMonsters.size(); i++) {
         temp = temp.concat("(" + (i + 1) + ")" + myMonsters.get(i).getDescription() + ".");
       }
+      temp = temp.concat("\n");
     }
-    temp = temp.concat("\n");
+
 
 
 
@@ -184,8 +187,8 @@ public class Chamber extends Space implements java.io.Serializable{
       for (i = 0; i < myTreasures.size(); i++) {
         temp = temp.concat("(" + (i + 1) + ")" + myTreasures.get(i).getDescription() + ".");
       }
+      temp = temp.concat("\n");
     }
-    temp = temp.concat("\n");
 
     if (myDoors.size() != 0) {
       temp = temp.concat(" This chamber connects to " + myDoors.size() + " doors. ");

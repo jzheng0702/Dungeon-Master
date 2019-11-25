@@ -5,8 +5,7 @@ package jzheng;
  * @version    1.3
  */
 
-public abstract class Space implements java.io.Serializable{
-
+public abstract class Space implements java.io.Serializable {
  /**
   * get description.
   * @return the description

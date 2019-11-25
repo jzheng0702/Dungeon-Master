@@ -11,7 +11,7 @@ import java.util.HashMap;
 * @version    1.3
 */
 
-public class Passage extends Space implements java.io.Serializable{
+public class Passage extends Space implements java.io.Serializable {
   /**
   * my arraylist instance variable, record all the passage sections.
   */
@@ -28,12 +28,12 @@ public class Passage extends Space implements java.io.Serializable{
   private ArrayList<Door> myDoors = new ArrayList<Door>(1);
 
   /**
-  * number of monsters
+  * number of monsters.
   */
   private int numOfMonster;
 
   /**
-  * number of treasures
+  * number of treasures.
   */
   private int numOfTreasure;
 
@@ -159,7 +159,7 @@ public class Passage extends Space implements java.io.Serializable{
   }
 
   /**
-  * returns Monster array list's size
+  * returns Monster array list's size.
   * @return monster array size
   */
   public int getMonsterSize() {
@@ -167,7 +167,7 @@ public class Passage extends Space implements java.io.Serializable{
   }
 
   /**
-  * returns treasure array list's size
+  * returns treasure array list's size.
   * @return treasure array size
   */
   public int getTreasureSize() {
@@ -175,7 +175,7 @@ public class Passage extends Space implements java.io.Serializable{
   }
 
   /**
-  * returns treasure array list
+  * returns treasure array list.
   * @return treasure array
   */
   public ArrayList getTreasures() {
@@ -191,7 +191,7 @@ public class Passage extends Space implements java.io.Serializable{
   }
 
   /**
-  * returns monster array list
+  * returns monster array list.
   * @return monster array
   */
   public ArrayList getMonsters() {
