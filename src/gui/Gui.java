@@ -329,7 +329,7 @@ public class Gui<toReturn> extends Application implements java.io.Serializable {
   */
   private void monsterAdd() {
     String monsterInfo = theController.addTempMonster(userChoice);
-    output2.setText("You have choose monster " + userChoice + " It is: " + monsterInfo + ", please hit confirm button to save changes");
+    output2.setText("You have choose monster " + userChoice + " It is: " + monsterInfo + ", please click the confirm button to save changes");
   }
 
   /**
@@ -337,7 +337,7 @@ public class Gui<toReturn> extends Application implements java.io.Serializable {
   */
   private void treasureAdd() {
     String treasureInfo = theController.addTempTreasure(userChoice);
-    output2.setText("You have choose treasure " + userChoice + " It is: " + treasureInfo + ", please hit confirm button to save changes");
+    output2.setText("You have choose treasure " + userChoice + " It is: " + treasureInfo + ", please click the confirm button to save changes");
   }
 
   /**
@@ -363,7 +363,7 @@ public class Gui<toReturn> extends Application implements java.io.Serializable {
     } else {
       monsterInfo = theController.deleteTempMonsterPassage(getIndex(currentSpace), userChoice);
     }
-    output2.setText("You have choose monster " + userChoice + " It is: " + monsterInfo + ", please hit confirm button to save changes");
+    output2.setText("You have choose monster " + userChoice + " It is: " + monsterInfo + ", please click the confirm button to save changes");
   }
 
   /**
@@ -376,7 +376,7 @@ public class Gui<toReturn> extends Application implements java.io.Serializable {
     } else {
       treasureInfo = theController.deleteTempTreasurePassage(getIndex(currentSpace), userChoice);
     }
-    output2.setText("You have choose treasure " + userChoice + " It is: " + treasureInfo + ", please hit confirm button to save changes");
+    output2.setText("You have choose treasure " + userChoice + " It is: " + treasureInfo + ", please click the confirm button to save changes");
   }
 
   /**
@@ -573,10 +573,10 @@ public class Gui<toReturn> extends Application implements java.io.Serializable {
   private void addFinal() {
     if (currentType == 1) {
       theController.addTreasure(getIndex(currentSpace));
-      output.setText("Successfully added a treasure to " + currentSpace + "\n Please click the label again to see the changes");
+      output.setText("Successfully added a treasure to " + currentSpace + "\n Please click the space again!");
     } else {
       theController.addMonster(getIndex(currentSpace));
-      output.setText("Successfully added a monster to " + currentSpace + "\n Please click the label again to see the changes");
+      output.setText("Successfully added a monster to " + currentSpace + "\n Please click the space again!");
     }
   }
 
@@ -586,10 +586,10 @@ public class Gui<toReturn> extends Application implements java.io.Serializable {
   private void deleteFinal() {
     if (currentType == 1) {
       theController.deleteTreasure(getIndex(currentSpace));
-      output.setText("Successfully removed a treasure to " + currentSpace + "\n Please click the label again to see the changes");
+      output.setText("Successfully removed a treasure in " + currentSpace + "\n Please click the space again!");
     } else {
       theController.deleteMonster(getIndex(currentSpace));
-      output.setText("Successfully removed a monster to " + currentSpace + "\n Please click the label again to see the changes");
+      output.setText("Successfully removed a monster in " + currentSpace + "\n Please click the space again!");
     }
   }
 
@@ -599,10 +599,10 @@ public class Gui<toReturn> extends Application implements java.io.Serializable {
   private void addPassageFinal() {
     if (currentType == 1) {
       theController.addTreasurePassage(getIndex(currentSpace));
-      output.setText("Successfully added a treasure to " + currentSpace + "\n Please click the label again to see the changes");
+      output.setText("Successfully added a treasure to " + currentSpace + "\n Please click the space again!");
     } else {
       theController.addMonsterPassage(getIndex(currentSpace));
-      output.setText("Successfully added a monster to " + currentSpace + "\n Please click the label again to see the changes");
+      output.setText("Successfully added a monster to " + currentSpace + "\n Please click the space again!");
     }
   }
 
@@ -613,10 +613,10 @@ public class Gui<toReturn> extends Application implements java.io.Serializable {
   private void deletePassageFinal() {
     if (currentType == 1) {
       theController.deleteTreasurePassage(getIndex(currentSpace));
-      output.setText("Successfully removed a treasure to " + currentSpace);
+      output.setText("Successfully removed a treasure in " + currentSpace + "\n Please click the space again!");
     } else {
       theController.deleteMonsterPassage(getIndex(currentSpace));
-      output.setText("Successfully removed a monster to " + currentSpace);
+      output.setText("Successfully removed a monster in " + currentSpace + "\n Please click the space again!");
     }
   }
 
